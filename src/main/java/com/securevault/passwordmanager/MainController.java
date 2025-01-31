@@ -16,16 +16,32 @@ public class MainController {
   private UserRepository userRepository;
 
   @PostMapping(path="/add") // Map ONLY POST Requests
-  public @ResponseBody String addNewUser (@RequestParam String name
-      , @RequestParam String email) {
+  public @ResponseBody String addNewUser (@RequestParam String firstName
+      , @RequestParam String lastName, @RequestParam String password, @RequestParam String email,
+      @RequestParam Boolean isPersonalAccount, @RequestParam Long orgId) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
-    User n = new User();
-    n.setName(name);
-    n.setEmail(email);
-    userRepository.save(n);
-    return "Saved";
+    // If there is a user that already has that email, don't create them.
+    // Else, create them.
+    if(userRepository.findByEmail(email) != null) {
+      return "A user with the email " + email + " already exists.";
+    } else {
+      User n = new User();
+      n.setFirstName(firstName);
+      n.setLastName(lastName);
+      n.setPassword(password); // Need to figure out if we hash in backend or frontend before POST request
+      n.setPersonalAccount(isPersonalAccount); // Figure out how to create org accounts
+      n.setEmail(email);
+  
+      // If the account is not a personal account, set the orgId
+      if(!n.isPersonalAccount()) {
+        n.setOrgId(orgId);
+      }
+  
+      userRepository.save(n);
+      return "Saved";
+    }
   }
 
   @GetMapping(path="/all")
