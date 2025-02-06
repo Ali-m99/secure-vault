@@ -19,7 +19,7 @@ public class MainController {
   @Autowired
   private PasswordEncoder passwordEncoder; // Inject BCryptPasswordEncoder
 
-  @PostMapping(path = "/add") // Map ONLY POST Requests
+  @PostMapping(path = "/register") // Map ONLY POST Requests
   public @ResponseBody String addNewUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName, @RequestParam(value = "password") String password,
       @RequestParam(value = "email") String email, @RequestParam(value = "isPersonalAccount") Boolean isPersonalAccount,
@@ -56,6 +56,24 @@ public class MainController {
         return "Error saving user: " + e.getMessage();
       }
     }
+  }
+
+  @PostMapping(path = "/login")
+  public @ResponseBody String authenticate(@RequestParam(value = "email") String email,
+      @RequestParam(value = "password") String password) {
+
+    User user = userRepository.findByEmail(email);
+
+    if (user != null) {
+      if (passwordEncoder.matches(password, user.getPassword())) {
+        return "Logged in!";
+      } else {
+        return "Password is incorrect!";
+      }
+    } else {
+      return "User not found.";
+    }
+
   }
 
   @GetMapping(path = "/all")

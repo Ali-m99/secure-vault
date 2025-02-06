@@ -19,7 +19,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Disable CSRF for development (enable in production)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/**").permitAll() // Allow public access to /user endpoints
+                        .requestMatchers("/**").permitAll() // Allow public access to /user endpoints
                         .anyRequest().authenticated()); // Secure all other endpoints
 
         return http.build();
