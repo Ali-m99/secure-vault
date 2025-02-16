@@ -21,6 +21,9 @@ public class UserController {
   @Autowired
   private PasswordEncoder passwordEncoder; // Inject BCryptPasswordEncoder
 
+  @Autowired
+  BucketService bucketService;
+
   @PostMapping(path = "/register") // Map ONLY POST Requests
   public @ResponseBody String addNewUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName, @RequestParam(value = "password") String password,
@@ -52,6 +55,12 @@ public class UserController {
         }
 
         userRepository.save(n);
+
+        User savedUser = userRepository.findByEmail(email);
+        // Creates S3 bucket for user 
+        String bucketName = "sv-p" + savedUser.getUserId();
+        bucketService.createBucket(bucketName);
+        
         return "User saved";
       } catch (Exception e) {
         e.printStackTrace();
