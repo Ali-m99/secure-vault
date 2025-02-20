@@ -1,19 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import { AuthProvider } from './User/UserState'; // Import AuthProvider
+import LoginPage from './Components/pages/auth/LoginPage';
+import SignupPage from './Components/pages/auth/SignupPage'; // Import SignupPage
+// import DashboardPage from './Components/pages/DashboardPage'; // Import DashboardPage
+// import BusinessDashboardPage from './Components/pages/business/BusinessDashboardPage'; // Import BusinessDashboardPage
+// import PersonalDashboardPage from './Components/pages/personal/PersonalDashboardPage'; // Import PersonalDashboardPage
+import './App.css';
 
 function App() {
   return (
-    <div>
-      <h1>Welcome to my App!</h1>
-      <form method='POST' action="/user/login">
-        <label for="email">Email:</label>
-        <input type="text" id="email" name="email" /><br /><br />
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" /><br /><br />
-        <input type="submit" value="Submit" />
-      </form>
-    </div>
+    
+      <Router> {/* Set up routing */}
+        <Routes>
+          <Route path="/" element={<LoginPage />} /> {/* Default route */}
+          <Route path="/login" element={<LoginPage />} /> {/* Login page */}
+          <Route path="/register" element={<SignupPage />} /> {/* Signup page */}
+          
+        </Routes>
+      </Router>
+    
   );
 }
 
