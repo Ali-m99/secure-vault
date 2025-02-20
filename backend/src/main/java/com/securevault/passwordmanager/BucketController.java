@@ -8,18 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
-@RequestMapping("/bucket")
+@RequestMapping("/file")
 public class BucketController {
     
     @Autowired
     BucketService bucketService;
 
-    @GetMapping("/download")
-    public @ResponseBody String downloadObject(@RequestParam("bucketName") String bucketName, @RequestParam("objName") String objName) throws Exception {
-        return bucketService.getObjectFromBucket(bucketName, objName);
+    @GetMapping("/downloadAll")
+    public @ResponseBody HashMap<String, String> getAllFiles(@RequestParam("bucketName") String bucketName) throws Exception {
+        return bucketService.getAllObjectsFromBucket(bucketName);
     }
 
     @PostMapping("/upload")

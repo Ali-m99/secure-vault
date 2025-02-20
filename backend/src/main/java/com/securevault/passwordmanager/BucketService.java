@@ -12,7 +12,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 @Service
 public class BucketService {
@@ -30,7 +32,7 @@ public class BucketService {
 
     // Returns a pre-signed URL to the object instead of the actual content for the
     // object
-    public String getObjectFromBucket(String bucketName, String objectName) throws IOException {
+    public String getPreSignedURL(String bucketName, String fileName) throws IOException {
         // Logic to generate the presigned URL
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
@@ -38,12 +40,31 @@ public class BucketService {
         expiration.setTime(expTimeMillis);
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName,
-                objectName)
+                fileName)
                 .withMethod(com.amazonaws.HttpMethod.GET)
                 .withExpiration(expiration);
 
         URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
         return url.toString();
+    }
+
+    public HashMap<String, String> getAllObjectsFromBucket(String bucketName) throws IOException {
+         HashMap<String, String> bucketFiles = new HashMap<>();
+
+        // List all objects in the bucket
+        ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName);
+        ListObjectsV2Result result;
+        
+        do {
+            result = s3Client.listObjectsV2(request);
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+                String fileName = objectSummary.getKey();
+                bucketFiles.put(getPreSignedURL(bucketName, fileName), fileName);
+            }
+            request.setContinuationToken(result.getNextContinuationToken());
+        } while (result.isTruncated());
+
+        return bucketFiles;
     }
 
     public void createBucket(String bucketName) {
