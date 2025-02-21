@@ -1,5 +1,4 @@
 // Article for reference: https://medium.com/@ankithahjpgowda/access-amazon-s3-bucket-from-java-springboot-bf8c214f015d
-
 package com.securevault.passwordmanager;
 
 import com.amazonaws.services.s3.model.Bucket;

@@ -14,6 +14,7 @@ public class Password {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long passwordId;
+    private String serviceName;
     private String password;
     private String userName;
     private String notes;
@@ -72,5 +73,14 @@ public class Password {
         this.user = user;
     }
 
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    
 
 }
