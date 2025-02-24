@@ -2,6 +2,9 @@
 package com.securevault.passwordmanager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.security.core.AuthenticationException;
 
 @Controller // This means that this class is a Controller
 @RequestMapping(path = "/user") // This means URL's start with /user (after Application path)
@@ -21,6 +25,9 @@ public class UserController {
 
   @Autowired
   private PasswordEncoder passwordEncoder; // Inject BCryptPasswordEncoder
+
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
   @Autowired
   BucketService bucketService;
@@ -74,17 +81,14 @@ public class UserController {
   public @ResponseBody String authenticate(@RequestParam(value = "email") String email,
       @RequestParam(value = "password") String password) {
 
-    User user = userRepository.findByEmail(email);
-
-    if (user != null) {
-      if (passwordEncoder.matches(password, user.getPassword())) {
-        return "Logged in!";
-      } else {
-        return "Password is incorrect!";
+      try {
+          var authToken = new UsernamePasswordAuthenticationToken(email, password);
+          var auth = authenticationManager.authenticate(authToken);
+          SecurityContextHolder.getContext().setAuthentication(auth);
+          return "New log in after changes!";
+      } catch (AuthenticationException e) {
+          return "Invalid credentials!";
       }
-    } else {
-      return "User not found.";
-    }
 
   }
 
