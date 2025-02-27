@@ -5,11 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -43,12 +46,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authenticationProvider(authenticationProvider())
-            .csrf(csrf -> csrf.disable()) // Disable CSRF for development (enable in production)
+            .csrf(csrf -> csrf.disable()) // TODO: Properly implement CSRF protection
             .authorizeHttpRequests(auth -> auth
                 // Allow registration and login endpoints without authentication
                 .requestMatchers("/user/register", "/user/login").permitAll()
                 // Secure all other endpoints
                 .anyRequest().authenticated())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) 
+                .sessionFixation().migrateSession() // Prevents session hijacking
+                .maximumSessions(1) // Allows only one session per user
+                .maxSessionsPreventsLogin(false) // Allow new login to replace old session           
+                )
             .logout(logout -> logout.permitAll()
             .logoutSuccessHandler((request, response, auth) -> {
                 System.out.println("Logout successful!"); // For testing purposes
