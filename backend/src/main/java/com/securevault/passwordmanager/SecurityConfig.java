@@ -49,7 +49,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // TODO: Properly implement CSRF protection
             .authorizeHttpRequests(auth -> auth
                 // Allow registration and login endpoints without authentication
-                .requestMatchers("/user/register", "/user/login").permitAll()
+                .requestMatchers("/**").permitAll()
                 // Secure all other endpoints
                 .anyRequest().authenticated())
             .sessionManagement(session -> session

@@ -48,9 +48,12 @@ public class PasswordController {
     }
 
     @PostMapping(path="/update")
-    public @ResponseBody String updatePassword(@RequestParam Long passwordId, @RequestParam String newPassword){
-        passwordRepository.updatePassword(passwordId, newPassword);
-        return "updated password";
+    public @ResponseBody String updatePassword(@RequestParam(required = false) String serviceName, @RequestParam Long passwordId, 
+    @RequestParam(required = false) String newPassword, @RequestParam(required = false) String note, @RequestParam(required = false) String userName,
+    @RequestParam(required = false) String category){
+        passwordRepository.updatePasswordDetails(passwordId, serviceName, newPassword, note, userName,
+        category);
+        return "password details updated";
     } 
 
     @GetMapping(path="/getPasswords")

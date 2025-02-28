@@ -92,6 +92,24 @@ public class UserController {
 
   }
 
+  @PostMapping(path="/forgotPassword")
+  public @ResponseBody String forgotPassword(@RequestParam Long userId, @RequestParam String newPassword){
+
+    String hashedPassword = passwordEncoder.encode(newPassword);
+    userRepository.forgotPassword(userId, hashedPassword);
+    return "Password Updated!";
+
+  }
+
+  
+  @PostMapping(path="/updateEmail")
+  public @ResponseBody String updateEmail(@RequestParam Long userId, @RequestParam String newEmail){
+
+    userRepository.updateEmail(userId, newEmail);
+    return "Email Updated!";
+
+  }
+
   @GetMapping(path = "/all")
   public @ResponseBody Iterable<User> getAllUsers() {
     // This returns a JSON or XML with the users
