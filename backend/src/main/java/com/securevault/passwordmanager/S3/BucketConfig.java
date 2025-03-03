@@ -1,7 +1,7 @@
 // Article for reference: https://medium.com/@ankithahjpgowda/access-amazon-s3-bucket-from-java-springboot-bf8c214f015d
 // This file is for configuring access to AWS S3, kind of like the "Repository" classes we have
 // for MySQL
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.S3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

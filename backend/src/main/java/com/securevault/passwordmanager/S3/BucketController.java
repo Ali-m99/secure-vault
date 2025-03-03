@@ -1,8 +1,10 @@
 // Article for reference: https://medium.com/@ankithahjpgowda/access-amazon-s3-bucket-from-java-springboot-bf8c214f015d
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.S3;
 
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.PresignedUrlDownloadRequest;
+import com.securevault.passwordmanager.FileInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class BucketController {
     BucketService bucketService;
 
     @GetMapping("/downloadAll")
-    public @ResponseBody HashMap<String, String> getAllFiles(@RequestParam("bucketName") String bucketName) throws Exception {
+    public @ResponseBody List<FileInfo> getAllFiles(@RequestParam("bucketName") String bucketName) throws Exception {
         return bucketService.getAllObjectsFromBucket(bucketName);
     }
 

@@ -1,7 +1,9 @@
 //Doc used for implementation: https://spring.io/guides/gs/accessing-data-mysql
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.User;
 
 import java.util.List;
+
+import com.securevault.passwordmanager.Password.Password;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

@@ -1,10 +1,12 @@
 // Article for reference: https://medium.com/@ankithahjpgowda/access-amazon-s3-bucket-from-java-springboot-bf8c214f015d
 
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.S3;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.securevault.passwordmanager.FileInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
@@ -48,22 +50,40 @@ public class BucketService {
         return url.toString();
     }
 
-    public HashMap<String, String> getAllObjectsFromBucket(String bucketName) throws IOException {
-         HashMap<String, String> bucketFiles = new HashMap<>();
+    // public HashMap<String, String> getAllObjectsFromBucket(String bucketName) throws IOException {
+    //      HashMap<String, String> bucketFiles = new HashMap<>();
 
-        // List all objects in the bucket
+    //     // List all objects in the bucket
+    //     ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName);
+    //     ListObjectsV2Result result;
+        
+    //     do {
+    //         result = s3Client.listObjectsV2(request);
+    //         for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+    //             String fileName = objectSummary.getKey();
+    //             bucketFiles.put(getPreSignedURL(bucketName, fileName), fileName);
+    //         }
+    //         request.setContinuationToken(result.getNextContinuationToken());
+    //     } while (result.isTruncated());
+
+    //     return bucketFiles;
+    // }
+
+    public List<FileInfo> getAllObjectsFromBucket(String bucketName) throws IOException {
+        List<FileInfo> bucketFiles = new ArrayList<>();
+    
         ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName);
         ListObjectsV2Result result;
-        
+    
         do {
             result = s3Client.listObjectsV2(request);
             for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
-                String fileName = objectSummary.getKey();
-                bucketFiles.put(getPreSignedURL(bucketName, fileName), fileName);
+                String preSignedUrl = getPreSignedURL(bucketName, objectSummary.getKey());
+                bucketFiles.add(new FileInfo(preSignedUrl, objectSummary.getKey(), objectSummary.getLastModified()));
             }
             request.setContinuationToken(result.getNextContinuationToken());
         } while (result.isTruncated());
-
+    
         return bucketFiles;
     }
 

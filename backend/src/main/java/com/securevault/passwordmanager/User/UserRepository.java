@@ -1,5 +1,5 @@
 //Doc used for implementation: https://spring.io/guides/gs/accessing-data-mysql
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.User;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

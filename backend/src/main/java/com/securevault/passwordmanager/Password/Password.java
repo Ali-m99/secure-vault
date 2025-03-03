@@ -1,4 +1,7 @@
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.Password;
+
+import com.securevault.passwordmanager.Auditable;
+import com.securevault.passwordmanager.User.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Password {
+public class Password extends Auditable {
 
     @Id
 

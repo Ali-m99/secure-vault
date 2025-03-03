@@ -1,4 +1,4 @@
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.Config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

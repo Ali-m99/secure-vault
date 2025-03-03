@@ -1,5 +1,5 @@
 //Doc used for implementation: https://spring.io/guides/gs/accessing-data-mysql
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.securevault.passwordmanager.S3.BucketService;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.security.core.AuthenticationException;
 

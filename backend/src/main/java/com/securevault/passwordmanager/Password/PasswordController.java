@@ -1,5 +1,6 @@
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.Password;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.securevault.passwordmanager.User.User;
+import com.securevault.passwordmanager.User.UserRepository;
+
+import java.time.Instant;
 
 @Controller
 @RequestMapping(path="/password")
@@ -30,12 +36,15 @@ public class PasswordController {
         User user = userRepository.findByEmail(email);
         Password password = new Password();
 
+        Long timestamp = Instant.now().toEpochMilli();
+
         password.setServiceName(serviceName);
         password.setUserName(userName);
         password.setPassword(newPassword);
         password.setNotes(note);
         password.setCategory(category);
         password.setUser(user);
+        password.setDateCreated(timestamp);
         passwordRepository.save(password);
 
         return "password stored!";
@@ -51,8 +60,9 @@ public class PasswordController {
     public @ResponseBody String updatePassword(@RequestParam(required = false) String serviceName, @RequestParam Long passwordId, 
     @RequestParam(required = false) String newPassword, @RequestParam(required = false) String note, @RequestParam(required = false) String userName,
     @RequestParam(required = false) String category){
+        Long timestamp = Instant.now().toEpochMilli();
         passwordRepository.updatePasswordDetails(passwordId, serviceName, newPassword, note, userName,
-        category);
+        category, timestamp);
         return "password details updated";
     } 
 

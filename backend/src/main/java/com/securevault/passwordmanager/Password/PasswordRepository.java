@@ -1,4 +1,4 @@
-package com.securevault.passwordmanager;
+package com.securevault.passwordmanager.Password;
 
 import java.util.List;
 
@@ -24,11 +24,12 @@ public interface PasswordRepository extends CrudRepository<Password, Long> {
                     password = COALESCE(:newPassword, password),
                     notes = COALESCE(:note, notes),
                     user_name = COALESCE(:userName, user_name),
-                    category = COALESCE(:category, category)
+                    category = COALESCE(:category, category),
+                    last_modified_time = COALESCE(:lastModifiedTime, last_modified_time)
                 WHERE password_id = :passwordId
             """, nativeQuery = true)
     void updatePasswordDetails(Long passwordId, String serviceName, String newPassword, String note, String userName,
-            String category);
+            String category, Long lastModifiedTime);
 
     @Transactional
     @Query("SELECT p.serviceName, p.passwordId, p.password, p.userName, p.category, p.notes FROM Password p INNER JOIN p.user u WHERE u.id = :userId")
