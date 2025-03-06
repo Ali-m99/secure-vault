@@ -21,16 +21,16 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:8080/user/login', {
+      const response = await fetch('/user/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({email, password}).toString(),
       });
 
       const data = await response.json();
 
       if (data.status === 'success') {
-        const userData = { email, isPersonalAccount: data.isPersonalAccount }; // Add more fields
+        const userData = { email, isPersonalAccount: data.isPersonalAccount, userId: data.userId,  firstName: data.firstName}; // Add more fields
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
       } else {

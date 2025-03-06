@@ -88,10 +88,9 @@ public class UserController {
   }
 
   @PostMapping(path = "/login", produces = "application/json")
-  public ResponseEntity<Map<String, Object>> authenticate(@RequestBody Map<String, String> loginRequest) {
+  public ResponseEntity<Map<String, Object>> authenticate(@RequestParam String email, 
+  @RequestParam String password) {
 
-    String email = loginRequest.get("email");
-    String password = loginRequest.get("password");
     Map<String, Object> responseBody = new HashMap<>();
     
     User loggedInUser = userRepository.findByEmail(email);
