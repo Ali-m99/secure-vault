@@ -31,8 +31,5 @@ public interface PasswordRepository extends CrudRepository<Password, Long> {
     void updatePasswordDetails(Long passwordId, String serviceName, String newPassword, String note, String userName,
             String category, Long lastModifiedTime);
 
-    @Transactional
-    @Query("SELECT p.serviceName, p.passwordId, p.password, p.userName, p.category, p.notes FROM Password p INNER JOIN p.user u WHERE u.id = :userId")
-    List<Object[]> getAllUserPasswords(Long userId);
 
 }

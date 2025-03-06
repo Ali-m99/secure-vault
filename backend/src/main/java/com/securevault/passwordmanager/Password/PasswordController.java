@@ -66,12 +66,11 @@ public class PasswordController {
         return "password details updated";
     } 
 
-    @GetMapping(path="/getPasswords")
-    public @ResponseBody List<Object[]> getPasswords(@RequestParam Long userId){
-       List<Object[]> userPasswords = passwordRepository.getAllUserPasswords(userId);
-        return userPasswords;
+    @GetMapping("/getPasswords")
+    public @ResponseBody List<Password> getPasswords(@RequestParam Long userId) {
+        User user = userRepository.findByUserId(userId)
+                                  .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getPasswords();
     }
-
-
 
 }

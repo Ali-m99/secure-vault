@@ -1,5 +1,6 @@
 package com.securevault.passwordmanager.Password;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.securevault.passwordmanager.Auditable;
 import com.securevault.passwordmanager.User.User;
 
@@ -26,6 +27,7 @@ public class Password extends Auditable {
        // Many-to-One relationship with User
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) // This creates a foreign key column "user_id"
+    @JsonIgnore
     private User user;
 
     public Long getPasswordId() {
