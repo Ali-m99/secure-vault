@@ -1,52 +1,98 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import CreatePasswords from '../../ui/CreatePasswords'; // Import the CreatePasswords component
 
 const PersonalVault = () => {
+  const [passwords, setPasswords] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch passwords from the backend
+  const fetchPasswords = async () => {
+    try {
+      // Retrieve the user object from localStorage
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user || !user.userId) {
+        throw new Error('User ID not found in localStorage');
+      }
+
+      const userId = user.userId; // Access userId from the user object
+      const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${userId}`);
+      const data = await response.json();
+
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        setPasswords(data);
+      } else {
+        console.error('Expected an array of passwords, but got:', data);
+        setPasswords([]); // Set passwords to an empty array
+      }
+    } catch (error) {
+      console.error('Failed to fetch passwords:', error);
+      setPasswords([]); // Set passwords to an empty array
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPasswords();
+  }, []);
+
+  // Refresh the password list after a new password is created
+  const handlePasswordCreated = () => {
+    fetchPasswords();
+  };
+
+  // Group passwords by category
+  const groupPasswordsByCategory = () => {
+    const grouped = {};
+
+    // Ensure passwords is an array
+    if (!Array.isArray(passwords)) {
+      console.error('Expected passwords to be an array, but got:', passwords);
+      return grouped; // Return an empty grouped object
+    }
+
+    passwords.forEach((password) => {
+      const category = password.category || 'Uncategorized'; // Use default category if none is provided
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(password);
+    });
+
+    return grouped;
+  };
+
+  const groupedPasswords = groupPasswordsByCategory();
+
   return (
     <div className="p-8 py-24">
       <h1 className="text-3xl font-bold mb-6 text-green-600">Vault</h1>
 
-      {/* Create and Delete Passwords Vault Buttons */}
-      <div className="flex space-x-2 md:space-x-10 py-4 " >
-      <button className=" relative overflow-hidden mt-4 p-2 bg-black/10 rounded-tl-lg text-white border-2 border-green-400 transition-all duration-300 group">
-          <span className="relative z-10 text-sm md:text-lg ">Create Password Vault</span>
-          <span className=" absolute  inset-y-0 right-full w-0 bg-green-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
-        </button>
-        <button className=" relative overflow-hidden mt-4 p-2 bg-black/10 rounded-tr-lg text-white border-2 border-green-400 transition-all duration-300 group">
-          <span className="relative z-10 text-sm md:text-lg">Delete Password Vault</span>
-          <span className=" absolute  inset-y-0 left-full w-0 bg-green-700 transition-all duration-300 group-hover:left-0 group-hover:w-full"></span>
-        </button>
-      </div>
+      {/* Always show the Create Password button */}
+      <CreatePasswords onPasswordCreated={handlePasswordCreated} />
 
-      {/* Dislay Vault Names with Passwords */}
+      {/* Display Passwords Grouped by Category */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 py-10">
-        <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
-          <h2 className="text-xl font-semibold mb-4 text-green-400">Vault Name 1 </h2>
-          <ul className="text-gray-300">
-            <li>Google - john.doe@gmail.com</li>
-            <li>GitHub - john_doe</li>
-            <li>Netflix - john.doe@example.com</li>
-          </ul>
-          <button className="mt-4 p-2 bg-green-700 rounded hover:bg-green-800 transition-colors">
-          Add New Password
-          </button>
+        {Object.entries(groupedPasswords).length > 0 ? (
+          Object.entries(groupedPasswords).map(([category, passwords]) => (
+            <div key={category} className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
+              <h2 className="text-xl font-semibold mb-4 text-green-400">{category}</h2>
+              <ul className="text-gray-300">
+                {passwords.map((password) => (
+                  <li key={password.passwordId} className="mb-2">
+                    <strong>{password.serviceName}</strong> - {password.userName}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-400">
+            {loading ? 'Loading passwords...' : 'No passwords found. Create one to get started!'}
+          </div>
+        )}
       </div>
-
-      <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
-        <h2 className="text-xl font-semibold mb-4 text-green-400">Your Passwords</h2>
-        <ul className="text-gray-300">
-          <li>Google - john.doe@gmail.com</li>
-          <li>GitHub - john_doe</li>
-          <li>Netflix - john.doe@example.com</li>
-        </ul>
-        <button className="mt-4 p-2 bg-green-700 rounded hover:bg-green-800 transition-colors">
-          Add New Password
-        </button>
-      </div>
-
-
-
-      </div>
-      
     </div>
   );
 };

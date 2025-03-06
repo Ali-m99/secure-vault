@@ -67,8 +67,9 @@ public class PasswordController {
     } 
 
     @GetMapping("/getPasswords")
-    public @ResponseBody List<Password> getPasswords(@RequestParam Long userId) {
-        User user = userRepository.findByUserId(userId)
+    public @ResponseBody List<Password> getPasswords(@RequestParam String userId) {
+        System.out.println(userId);
+        User user = userRepository.findByUserId(Long.parseLong(userId))
                                   .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getPasswords();
     }
