@@ -21,7 +21,8 @@ public class BucketController {
     BucketService bucketService;
 
     @GetMapping("/downloadAll")
-    public @ResponseBody List<FileInfo> getAllFiles(@RequestParam("bucketName") String bucketName) throws Exception {
+    public @ResponseBody List<FileInfo> getAllFiles(@RequestParam String userId) throws Exception {
+        String bucketName = "sv-p" + userId;
         return bucketService.getAllObjectsFromBucket(bucketName);
     }
 
