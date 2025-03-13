@@ -32,6 +32,8 @@ public class PasswordController {
     public @ResponseBody String storePassword(@RequestParam String serviceName, @RequestParam String encryptedPassword, 
         @RequestParam String salt, @RequestParam(required = false) String note, @RequestParam String userName,
         @RequestParam(required = false) String category, @RequestParam String email) {
+
+        Long timestamp = Instant.now().toEpochMilli();
     
         User user = userRepository.findByEmail(email);
         Password password = new Password();
@@ -42,6 +44,7 @@ public class PasswordController {
         password.setUserName(userName);
         password.setNotes(note);
         password.setCategory(category);
+        password.setDateCreated(timestamp);
         password.setUser(user);
     
         passwordRepository.save(password);
