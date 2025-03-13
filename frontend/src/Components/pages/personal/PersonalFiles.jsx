@@ -113,7 +113,7 @@ const PersonalFiles = () => {
       {/* File Explorer Title */}
       <h1 className="text-3xl font-bold mb-6 text-green-600">File Explorer</h1>
 
-      <UploadFiles onFileUploaded={handleFileUpload}></UploadFiles>
+      <UploadFiles onFileUploaded={handleFileUpload} folder={currentFolder}></UploadFiles>
 
       <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
         {loading ? (

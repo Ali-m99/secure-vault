@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const UploadFiles = ({ onFileUploaded }) => {
+const UploadFiles = ({ onFileUploaded, folder }) => {
   const [showForm, setShowForm] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
@@ -13,12 +13,16 @@ const UploadFiles = ({ onFileUploaded }) => {
       return;
     }
 
+    // Builds the folder path properly from an array
+    // (i.e. from ["folder1", "folder2", "folder3"] to "folder1/folder2/folder3")
+    const folderPath = folder.join("/"); 
+
     // Prepare form data
     const formData = new FormData();
     const user = JSON.parse(localStorage.getItem('user'));
     formData.append('file', file);
     formData.append('userId', user.userId); // Assuming userId is stored in localStorage
-    formData.append("fileName", file.name);
+    formData.append("fileName", folderPath + "/" + file.name);
 
     try {
       const response = await fetch('http://localhost:8080/file/upload', {
