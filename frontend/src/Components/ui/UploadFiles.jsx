@@ -15,14 +15,18 @@ const UploadFiles = ({ onFileUploaded, folder }) => {
 
     // Builds the folder path properly from an array
     // (i.e. from ["folder1", "folder2", "folder3"] to "folder1/folder2/folder3")
-    const folderPath = folder.join("/"); 
+    // If the passed in folder path isn't an array or is empty, upload file to root
+    let folderPath = "";
+    if(Array.isArray(folder) && folder.length >= 1) {
+      folderPath = folder.join("/") + "/"; // Add extra slash at end to separate end of path and file name
+    }
 
     // Prepare form data
     const formData = new FormData();
     const user = JSON.parse(localStorage.getItem('user'));
     formData.append('file', file);
     formData.append('userId', user.userId); // Assuming userId is stored in localStorage
-    formData.append("fileName", folderPath + "/" + file.name);
+    formData.append("fileName", folderPath + file.name);
 
     try {
       const response = await fetch('http://localhost:8080/file/upload', {
