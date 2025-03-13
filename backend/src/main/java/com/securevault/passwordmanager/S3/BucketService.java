@@ -9,9 +9,12 @@ import com.securevault.passwordmanager.FileInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.net.URL;
 import java.util.ArrayList;
@@ -91,13 +94,20 @@ public class BucketService {
         s3Client.createBucket(bucketName);
     }
 
-    public void putObjectIntoBucket(String bucketName, String objectName, String filePathToUpload) {
-        try {
-            s3Client.putObject(bucketName, objectName, new File(filePathToUpload));
+
+    public void putObjectIntoBucket(String bucketName, String fileName, MultipartFile file) {
+        try (InputStream inputStream = file.getInputStream()) {
+            // Create metadata for the object
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            // Upload the file to S3
+            s3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
+        } catch (IOException e) {
+            System.err.println("Error reading file input stream: " + e.getMessage());
         } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
-            System.exit(1);
+            System.err.println("AWS S3 error: " + e.getErrorMessage());
         }
     }
-
 }

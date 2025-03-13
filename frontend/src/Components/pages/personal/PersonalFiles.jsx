@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import UploadFiles from '../../ui/UploadFiles';
 
 const PersonalFiles = () => {
   // State to store all files retrieved from the backend
@@ -14,6 +15,10 @@ const PersonalFiles = () => {
   useEffect(() => {
     fetchFiles();
   }, []);
+
+  const handleFileUpload = () => {
+    fetchFiles();
+  };
 
   // Function to fetch files from the backend
   const fetchFiles = async () => {
@@ -107,6 +112,8 @@ const PersonalFiles = () => {
     <div className="p-8 py-24">
       {/* File Explorer Title */}
       <h1 className="text-3xl font-bold mb-6 text-green-600">File Explorer</h1>
+
+      <UploadFiles onFileUploaded={handleFileUpload}></UploadFiles>
 
       <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
         {loading ? (

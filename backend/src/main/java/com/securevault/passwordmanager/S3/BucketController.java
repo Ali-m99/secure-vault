@@ -6,8 +6,11 @@ import com.amazonaws.services.s3.model.PresignedUrlDownloadRequest;
 import com.securevault.passwordmanager.FileInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +30,9 @@ public class BucketController {
     }
 
     @PostMapping("/upload")
-    public void uploadObject(@RequestParam("bucketName") String bucketName, @RequestParam("objName") String objName) throws Exception {
-        bucketService.putObjectIntoBucket(bucketName, objName,"opt/test/v1/uploadfile.txt");
+    public ResponseEntity<String> uploadObject(@RequestParam String userId, @RequestParam String fileName, @RequestParam("file") MultipartFile file) throws Exception {
+        String bucketName = "sv-p" + userId;
+        bucketService.putObjectIntoBucket(bucketName, fileName, file);
+        return ResponseEntity.ok("File uploaded successfully");
     }
 }

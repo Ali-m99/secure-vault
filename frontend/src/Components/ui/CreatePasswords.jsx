@@ -56,12 +56,26 @@ const CreatePasswords = ({ onPasswordCreated }) => {
         <span className="relative z-10 text-sm md:text-lg">Create Password</span>
         <span className="absolute inset-y-0 right-full w-0 bg-green-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
       </button>
-
+  
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4 text-white">Create New Password</h2>
+            {/* Flex container for header and Exit button */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-white">Create New Password</h2>
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+              >
+                <span className="relative z-10 text-sm md:text-lg">Exit</span>
+                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+              </button>
+            </div>
+  
+            {/* Error message */}
             {error && <p className="text-red-500 mb-4">{error}</p>}
+  
+            {/* Form */}
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-300">Service Name</label>
@@ -124,6 +138,6 @@ const CreatePasswords = ({ onPasswordCreated }) => {
       )}
     </div>
   );
-};
+}
 
 export default CreatePasswords;
