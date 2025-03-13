@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import CryptoJS from 'crypto-js';
+import { deriveKey, encryptData } from '../cryptography/Crypto';
 
 const CreatePasswords = ({ onPasswordCreated }) => {
   const [showForm, setShowForm] = useState(false);
@@ -12,12 +14,19 @@ const CreatePasswords = ({ onPasswordCreated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const masterPassword = localStorage.getItem('masterPassword');
+    const salt = CryptoJS.lib.WordArray.random(128 / 8).toString(); // Generate a random salt
+    const key = deriveKey(masterPassword, salt);
+
+    const encryptedPassword = encryptData(newPassword, key.toString());
+
     // Prepare form-encoded data
     const formData = new URLSearchParams();
     const user = JSON.parse(localStorage.getItem('user'));
+    formData.append('encryptedPassword', encryptedPassword);
+    formData.append('salt', salt); // Store the salt for decryption
     formData.append('serviceName', serviceName);
     formData.append('email', user.email); // Assuming email is stored in localStorage
-    formData.append('newPassword', newPassword);
     formData.append('note', note);
     formData.append('userName', userName);
     formData.append('category', category || 'Uncategorized'); // Use default category if none is provided

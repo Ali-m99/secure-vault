@@ -19,7 +19,8 @@ public class Password extends Auditable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long passwordId;
     private String serviceName;
-    private String password;
+    private String encryptedPassword; // Store encrypted password
+    private String salt; // Store salt for decryption
     private String userName;
     private String notes;
     private String category;
@@ -38,12 +39,20 @@ public class Password extends Auditable {
         this.passwordId = id;
     }
 
-    public String getPassword() {
-        return password;
+    public String getEncryptedPassword() {
+        return encryptedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getUserName() {

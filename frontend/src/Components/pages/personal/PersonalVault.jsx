@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CreatePasswords from '../../ui/CreatePasswords'; // Import the CreatePasswords component
+import { deriveKey, decryptData } from '../../cryptography/Crypto';
 
 const PersonalVault = () => {
   const [passwords, setPasswords] = useState([]);
@@ -15,16 +16,24 @@ const PersonalVault = () => {
       }
 
       const userId = user.userId; // Access userId from the user object
+      const masterPassword = localStorage.getItem('masterPassword'); // Access master password from storage
       const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${userId}`);
       const data = await response.json();
 
-      // Ensure data is an array
-      if (Array.isArray(data)) {
-        setPasswords(data);
-      } else {
-        console.error('Expected an array of passwords, but got:', data);
-        setPasswords([]); // Set passwords to an empty array
-      }
+      // // Ensure data is an array
+      // if (Array.isArray(data)) {
+      //   setPasswords(data);
+      // } else {
+      //   console.error('Expected an array of passwords, but got:', data);
+      //   setPasswords([]); // Set passwords to an empty array
+      // }
+      const decryptedPasswords = data.map((password) => {
+        const key = deriveKey(masterPassword, password.salt);
+        const decryptedPassword = decryptData(password.encryptedPassword, key.toString());
+        return { ...password, decryptedPassword };
+      });
+
+      setPasswords(decryptedPasswords);
     } catch (error) {
       console.error('Failed to fetch passwords:', error);
       setPasswords([]); // Set passwords to an empty array
@@ -81,7 +90,7 @@ const PersonalVault = () => {
               <ul className="text-gray-300">
                 {passwords.map((password) => (
                   <li key={password.passwordId} className="mb-2">
-                    <strong>{password.serviceName}</strong> - {password.userName}
+                    <strong>{password.serviceName}</strong> - {password.userName} - password = {password.decryptedPassword}
                   </li>
                 ))}
               </ul>

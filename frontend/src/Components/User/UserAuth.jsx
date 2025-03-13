@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         const userData = { email, isPersonalAccount: data.isPersonalAccount, userId: data.userId,  firstName: data.firstName}; // Add more fields
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
+        localStorage.setItem('masterPassword', password); // Stores user's masterPassword
       } else {
         throw new Error(data.message);
       }

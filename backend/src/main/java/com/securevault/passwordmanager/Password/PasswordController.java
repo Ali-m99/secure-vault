@@ -29,25 +29,23 @@ public class PasswordController {
     private UserRepository userRepository;
 
     @PostMapping(path="/store")
-    public @ResponseBody String storePassword(@RequestParam String serviceName, @RequestParam String email, 
-    @RequestParam String newPassword, @RequestParam(required = false) String note, @RequestParam String userName,
-    @RequestParam(required = false) String category){
-
+    public @ResponseBody String storePassword(@RequestParam String serviceName, @RequestParam String encryptedPassword, 
+        @RequestParam String salt, @RequestParam(required = false) String note, @RequestParam String userName,
+        @RequestParam(required = false) String category, @RequestParam String email) {
+    
         User user = userRepository.findByEmail(email);
         Password password = new Password();
-
-        Long timestamp = Instant.now().toEpochMilli();
-
+    
         password.setServiceName(serviceName);
+        password.setEncryptedPassword(encryptedPassword);
+        password.setSalt(salt);
         password.setUserName(userName);
-        password.setPassword(newPassword);
         password.setNotes(note);
         password.setCategory(category);
         password.setUser(user);
-        password.setDateCreated(timestamp);
+    
         passwordRepository.save(password);
-
-        return "password stored!";
+        return "Password stored!";
     }
 
     @PostMapping(path="/delete")
