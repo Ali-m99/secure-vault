@@ -4,7 +4,7 @@ import CryptoJS from 'crypto-js';
 const deriveKey = (masterPassword, salt) => {
     return CryptoJS.PBKDF2(masterPassword, salt, {
         keySize: 256 / 32, // 256-bit key
-        iterations: 600000, // Same as Bitwarden
+        iterations: 100000,
     });
 };
 

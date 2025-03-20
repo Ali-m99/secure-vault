@@ -20,13 +20,6 @@ const PersonalVault = () => {
       const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${userId}`);
       const data = await response.json();
 
-      // // Ensure data is an array
-      // if (Array.isArray(data)) {
-      //   setPasswords(data);
-      // } else {
-      //   console.error('Expected an array of passwords, but got:', data);
-      //   setPasswords([]); // Set passwords to an empty array
-      // }
       const decryptedPasswords = data.map((password) => {
         const key = deriveKey(masterPassword, password.salt);
         const decryptedPassword = decryptData(password.encryptedPassword, key.toString());
@@ -76,7 +69,7 @@ const PersonalVault = () => {
 
   return (
     <div className="p-8 py-24">
-      <h1 className="text-3xl font-bold mb-6 text-green-600">Vault</h1>
+      <h1 className="text-3xl font-bold mb-6 text-green-600">Passwords</h1>
 
       {/* Always show the Create Password button */}
       <CreatePasswords onPasswordCreated={handlePasswordCreated} />

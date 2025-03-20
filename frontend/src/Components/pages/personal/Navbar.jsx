@@ -72,7 +72,7 @@ const Navbar = () => {
           {[
             { name: "Dashboard", path: "/user/personaldashboard" },
             { name: "Files", path: "/user/files" },
-            { name: "Vault", path: "/user/vault" },
+            { name: "Passwords", path: "/user/passwords" },
             { name: "Settings", path: "/user/settings" },
           ].map((tab) => (
             <li key={tab.name}>

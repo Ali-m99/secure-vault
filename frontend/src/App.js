@@ -35,7 +35,7 @@ function App() {
           }
         />
         <Route
-          path="/user/vault"
+          path="/user/passwords"
           element={
             <PersonalLayout>
               <PersonalVault />
