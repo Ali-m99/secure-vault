@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UploadFiles from '../../ui/UploadFiles';
+import CreateFolder from '../../ui/CreateFolder';
+import DeleteFile from '../../ui/DeleteFile';
 
 const PersonalFiles = () => {
   // State to store all files retrieved from the backend
@@ -110,62 +112,69 @@ const PersonalFiles = () => {
 
   return (
     <div className="p-8 py-24">
-      {/* File Explorer Title */}
-      <h1 className="text-3xl font-bold mb-6 text-green-600">File Explorer</h1>
+    <h1 className="text-3xl font-bold mb-6 text-green-600">File Explorer</h1>
 
-      <UploadFiles onFileUploaded={handleFileUpload} folder={currentFolder}></UploadFiles>
-
-      <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
-        {loading ? (
-          <p className="text-gray-400">Loading files...</p>
-        ) : (
-          <>
-            {/* Show 'Previous' button if inside a subfolder */}
-            {currentFolder.length > 0 && (
-              <button
-                onClick={handleGoBack}
-                className="mb-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
-              >
-                ← Previous
-              </button>
-            )}
-
-            <ul className="text-gray-300">
-              {/* Render folders first */}
-              {Object.keys(visibleFolders).map((folderName) => (
-                <li
-                  key={folderName}
-                  onClick={() => handleFolderClick(folderName)}
-                  className="mb-2 cursor-pointer text-green-400 hover:text-green-300"
-                >
-                  📁 {folderName}
-                </li>
-              ))}
-
-              {/* Render files */}
-              {visibleFiles.length > 0 ? (
-                visibleFiles.map((file) => (
-                  file.fileName && (
-                    <li key={file.fileName} className="mb-2">
-                      <a
-                        href={file.preSignedUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-green-400"
-                      >
-                        📄 {file.fileName}
-                      </a>
-                    </li>
-                  )
-                ))
-              ) : (
-                <p className="text-gray-400">No files in this folder.</p>
-              )}
-            </ul>
-          </>
-        )}
+      {/* Add a flex container for the buttons */}
+      <div className="flex gap-4 mb-6">
+        <UploadFiles onFileUploaded={handleFileUpload} folder={currentFolder} />
+        <CreateFolder onFolderCreated={handleFileUpload} folder={currentFolder} />
       </div>
+
+    <div className="bg-gradient-to-br from-black/90 via-black/5 to-black p-6 rounded-lg border-4 border-green-700">
+      {loading ? (
+        <p className="text-gray-400">Loading files...</p>
+      ) : (
+        <>
+          {currentFolder.length > 0 && (
+            <button
+              onClick={handleGoBack}
+              className="mb-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
+            >
+              ← Previous
+            </button>
+          )}
+
+          <ul className="text-gray-300">
+            {Object.keys(visibleFolders).map((folderName) => (
+              <li
+                key={folderName}
+                onClick={() => handleFolderClick(folderName)}
+                className="mb-2 cursor-pointer text-green-400 hover:text-green-300"
+              >
+                📁 {folderName}
+              </li>
+            ))}
+
+            {visibleFiles.length > 0 ? (
+              visibleFiles.map((file) => (
+                file.fileName && (
+                  <li key={file.fileName} className="mb-2 flex justify-between items-center group">
+                    <a
+                      href={file.preSignedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-green-400 flex-grow truncate mr-4"
+                    >
+                      📄 {file.fileName}
+                    </a>
+                    <div className="flex-shrink-0">
+                      <DeleteFile 
+                        onFileDeleted={handleFileUpload} 
+                        folder={currentFolder} 
+                        fileName={file.fileName}
+                      />
+                    </div>
+                  </li>
+                )
+              ))
+            ) : (
+              <p className="text-gray-400">No files in this folder.</p>
+            )}
+          </ul>
+        </>
+      )}
     </div>
+  </div>
   );
 };
 

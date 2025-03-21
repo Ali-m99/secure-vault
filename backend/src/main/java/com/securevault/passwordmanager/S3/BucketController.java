@@ -29,10 +29,24 @@ public class BucketController {
         return bucketService.getAllObjectsFromBucket(bucketName);
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteObject(@RequestParam String userId, @RequestParam String fileName) throws Exception {
+        String bucketName = "sv-p" + userId;
+        bucketService.deleteObject(bucketName, fileName);
+        return ResponseEntity.ok("File deleted successfully");
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> uploadObject(@RequestParam String userId, @RequestParam String fileName, @RequestParam("file") MultipartFile file) throws Exception {
         String bucketName = "sv-p" + userId;
         bucketService.putObjectIntoBucket(bucketName, fileName, file);
         return ResponseEntity.ok("File uploaded successfully");
+    }
+
+    @PostMapping("/createFolder")
+    public ResponseEntity<String> createFolder(@RequestParam String userId, @RequestParam String folderName) throws Exception {
+        String bucketName = "sv-p" + userId;
+        bucketService.createFolderInBucket(bucketName, folderName);
+        return ResponseEntity.ok("Folder created successfully");
     }
 }

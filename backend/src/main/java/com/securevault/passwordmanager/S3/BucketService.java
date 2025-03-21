@@ -94,6 +94,13 @@ public class BucketService {
         s3Client.createBucket(bucketName);
     }
 
+    public void deleteObject(String bucketName, String fileName) {
+        try {
+            s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        } catch (Exception e) {
+            System.err.println("Error deleting file: " + e.getMessage());
+        }
+    }
 
     public void putObjectIntoBucket(String bucketName, String fileName, MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
@@ -104,6 +111,22 @@ public class BucketService {
 
             // Upload the file to S3
             s3Client.putObject(new PutObjectRequest(bucketName, fileName, inputStream, metadata));
+        } catch (IOException e) {
+            System.err.println("Error reading file input stream: " + e.getMessage());
+        } catch (AmazonServiceException e) {
+            System.err.println("AWS S3 error: " + e.getErrorMessage());
+        }
+    }
+
+    public void createFolderInBucket(String bucketName, String folderName) {
+        try (InputStream inputStream = InputStream.nullInputStream()) {
+            // Create metadata for the object
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(0);
+            // metadata.setContentType(file.getContentType());
+
+            // Upload the file to S3
+            s3Client.putObject(new PutObjectRequest(bucketName, folderName, inputStream, metadata));
         } catch (IOException e) {
             System.err.println("Error reading file input stream: " + e.getMessage());
         } catch (AmazonServiceException e) {
