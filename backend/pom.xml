@@ -97,6 +97,18 @@
     		<artifactId>aws-java-sdk-s3</artifactId>
     		<version>1.12.649</version>
 		</dependency>
+
+		<dependency>
+  			<groupId>dev.samstevens.totp</groupId>
+  			<artifactId>totp-spring-boot-starter</artifactId>
+  			<version>1.7.1</version>
+		</dependency>
+
+		<dependency>
+  			<groupId>dev.samstevens.totp</groupId>
+  			<artifactId>totp</artifactId>
+  			<version>1.7.1</version>
+		</dependency>
 		
 	</dependencies>
 

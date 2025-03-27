@@ -45,7 +45,7 @@ const SignupPage = () => {
             }}
           ></div>
 
-          <Signup /> {/* Your existing Signup form component */}
+          <Signup />
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-400">
               Already have an account?{' '}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Signup = () => {
   const [firstName, setFirstName] = useState('');
@@ -6,6 +6,12 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [qrCode, setQrCode] = useState('');
+  const [secret, setSecret] = useState('');
+
+  useEffect(() => {
+    generateQrCode();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,6 +21,7 @@ const Signup = () => {
       lastName,
       email,
       password,
+      secret
     };
 
     try {
@@ -40,6 +47,17 @@ const Signup = () => {
       setMessage('An error occurred while submitting the form. Please try again.');
     }
   };
+
+  const generateQrCode = async () => {
+    try {
+      const response = await fetch("/mfa/setup");
+      const result = await response.json();
+      setQrCode(result.qrCode);
+      setSecret(result.secret);
+    } catch (error) {
+      setMessage('An error occurred while generating the QR code for MFA.');
+    }
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -82,6 +100,18 @@ const Signup = () => {
           required
         />
       </div>
+
+      {/*QR Code */}
+      {qrCode !== '' ? (
+        <div className="mb-4">
+          <label htmlFor="qrCode" className="block text-sm font-medium text-gray-300">Register for MFA</label>
+          <img src={qrCode} id='qrCode' alt='QR Code for MFA' />
+        </div>
+      ) : (
+        <div className="mb-4">
+          <p>Generating QR Code...</p>
+        </div>
+      )}
 
       {/* Submit Button */}
       <div className="mt-6">

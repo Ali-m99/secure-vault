@@ -19,24 +19,37 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Login function
-  const login = async (email, password) => {
+  const login = async (email, password, code) => {
     try {
-      const response = await fetch('/user/login', {
+      const totpResponse = await fetch('/mfa/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({email, password}).toString(),
+        body: new URLSearchParams({code, email}).toString(),
       });
 
-      const data = await response.json();
+      const totpData = await totpResponse.text();
 
-      if (data.status === 'success') {
-        const userData = { email, isPersonalAccount: data.isPersonalAccount, userId: data.userId,  firstName: data.firstName}; // Add more fields
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
-        localStorage.setItem('masterPassword', password); // Stores user's masterPassword
+      if(totpData === "success") {
+        const response = await fetch('/user/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({email, password}).toString(),
+        });
+  
+        const data = await response.json();
+  
+        if (data.status === 'success') {
+          const userData = { email, isPersonalAccount: data.isPersonalAccount, userId: data.userId,  firstName: data.firstName}; // Add more fields
+          setUser(userData);
+          localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
+          localStorage.setItem('masterPassword', password); // Stores user's masterPassword
+        } else {
+          throw new Error(data.message);
+        }
       } else {
-        throw new Error(data.message);
+        throw new Error(totpData.message);
       }
+
     } catch (error) {
       throw new Error('Login failed: ' + error.message);
     }
@@ -46,6 +59,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user'); // Clear user data
+    localStorage.removeItem('masterPassword'); // Clear password
   };
 
   return (

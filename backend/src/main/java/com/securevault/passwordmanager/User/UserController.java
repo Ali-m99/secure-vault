@@ -45,7 +45,7 @@ public class UserController {
   @PostMapping(path = "/register") // Map ONLY POST Requests
   public @ResponseBody String addNewUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName, @RequestParam(value = "password") String password,
-      @RequestParam(value = "email") String email) {
+      @RequestParam(value = "email") String email, @RequestParam(value = "secret") String secret) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
@@ -64,6 +64,7 @@ public class UserController {
         System.out.println("Hashed password: " + hashedPassword);
         n.setPassword(hashedPassword);
         n.setEmail(email);
+        n.setTotpSecret(secret); // sets secret used for MFA
 
         userRepository.save(n);
 
