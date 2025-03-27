@@ -5,8 +5,6 @@ const Signup = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isPersonalAccount, setIsPersonalAccount] = useState(false); // Unchecked by default
-  const [orgID, setOrgID] = useState(''); // Organization name (text input)
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
@@ -17,8 +15,6 @@ const Signup = () => {
       lastName,
       email,
       password,
-      isPersonalAccount,
-      orgID: isPersonalAccount ? null : orgID, // 
     };
 
     try {
@@ -39,8 +35,6 @@ const Signup = () => {
         setLastName('');
         setEmail('');
         setPassword('');
-        // setIsPersonalAccount(false);
-        // setOrgID('');
       }
     } catch (error) {
       setMessage('An error occurred while submitting the form. Please try again.');
@@ -88,29 +82,6 @@ const Signup = () => {
           required
         />
       </div>
-
-      {/* Account Type Checkbox */}
-      <div className="mb-4">
-        <label className="inline-flex items-center">
-          <input type="checkbox" checked={isPersonalAccount}
-            onChange={(e) => setIsPersonalAccount(e.target.checked)}
-            className="form-checkbox text-green-500"
-          />
-          <span className="ml-2 text-gray-300">Personal Account</span>
-        </label>
-      </div>
-
-      {/* Organization Name (Conditional) */}
-      {!isPersonalAccount && (
-        <div className="mb-4">
-            <label htmlFor="orgID" className="block text-sm font-medium text-gray-300">Organization Name</label>
-          <input type="text" id="orgID" value={orgID}
-            onChange={(e) => setOrgID(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-            // required={!isPersonalAccount}
-          />
-        </div>
-      )}
 
       {/* Submit Button */}
       <div className="mt-6">

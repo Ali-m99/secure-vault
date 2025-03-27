@@ -45,8 +45,7 @@ public class UserController {
   @PostMapping(path = "/register") // Map ONLY POST Requests
   public @ResponseBody String addNewUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName, @RequestParam(value = "password") String password,
-      @RequestParam(value = "email") String email, @RequestParam(value = "isPersonalAccount") Boolean isPersonalAccount,
-      @RequestParam(value = "orgId", required = false) Long orgId) {
+      @RequestParam(value = "email") String email) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
 
@@ -61,16 +60,10 @@ public class UserController {
         User n = new User();
         n.setFirstName(firstName);
         n.setLastName(lastName);
-        n.setPersonalAccount(isPersonalAccount);
         String hashedPassword = passwordEncoder.encode(password);
         System.out.println("Hashed password: " + hashedPassword);
         n.setPassword(hashedPassword);
         n.setEmail(email);
-
-        // If the account is not a personal account, set the orgId
-        if (!n.isPersonalAccount()) {
-          n.setOrgId(orgId);
-        }
 
         userRepository.save(n);
 
@@ -102,7 +95,6 @@ public class UserController {
 
           responseBody.put("status", "success");
           // You can add additional user info here if needed.
-          responseBody.put("isPersonalAccount", true); // example value
           responseBody.put("userId", loggedInUser.getUserId());
           responseBody.put("firstName", loggedInUser.getFirstName());
           

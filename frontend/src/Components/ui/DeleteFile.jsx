@@ -11,7 +11,7 @@ const DeleteFile = ({ onFileDeleted, folder, fileName }) => {
     // (i.e. from ["folder1", "folder2", "folder3"] to "folder1/folder2/folder3")
     // If the passed in folder path isn't an array or is empty, upload file to root
     let folderPath = "";
-    if(Array.isArray(folder) && folder.length >= 1) {
+    if (Array.isArray(folder) && folder.length >= 1) {
       folderPath = folder.join("/") + "/"; // Add extra slash at end to separate end of path and file name
     }
 
@@ -53,45 +53,45 @@ const DeleteFile = ({ onFileDeleted, folder, fileName }) => {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">Delete File</h2>
-            <button
-                onClick={() => setShowForm(!showForm)}
-                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-white">Delete File</h2>
+              <button
+  onClick={() => setShowForm(false)}
+  className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+>
+  <span className="relative z-10 text-sm md:text-lg">Exit</span>
+  <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+</button>
+            </div>
+
+            {/* Centered confirmation message */}
+            <div className="text-center mb-6">
+              <p className="text-white text-lg">Are you sure you want to delete the file "{fileName}"?</p>
+            </div>
+
+            {/* Error message */}
+            {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+
+            {/* Buttons */}
+            <form onSubmit={handleSubmit} className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
               >
-                <span className="relative z-10 text-sm md:text-lg">Exit</span>
-                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+                No
               </button>
+              <button
+                type="submit"
+                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-all duration-300"
+              >
+                Yes
+              </button>
+            </form>
           </div>
-      
-          {/* Centered confirmation message */}
-          <div className="text-center mb-6">
-            <p className="text-white text-lg">Are you sure you want to delete the file "{fileName}"?</p>
-          </div>
-      
-          {/* Error message */}
-          {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-      
-          {/* Buttons */}
-          <form onSubmit={handleSubmit} className="flex gap-4">
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
-            >
-              No
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-all duration-300"
-            >
-              Yes
-            </button>
-          </form>
         </div>
-      </div>
       )}
     </div>
   );

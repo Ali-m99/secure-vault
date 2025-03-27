@@ -136,19 +136,30 @@ const PersonalFiles = () => {
 
           <ul className="text-gray-300">
             {Object.keys(visibleFolders).map((folderName) => (
-              <li
-                key={folderName}
-                onClick={() => handleFolderClick(folderName)}
-                className="mb-2 cursor-pointer text-green-400 hover:text-green-300"
-              >
-                📁 {folderName}
-              </li>
+             <li 
+             key={folderName} 
+             className="mb-2 flex justify-between items-center"
+           >
+             <div
+               onClick={() => handleFolderClick(folderName)}
+               className="hover:text-green-400 flex-grow truncate mr-4 cursor-pointer"
+             >
+               📁 {folderName}
+             </div>
+             <div className="flex-shrink-0">
+               <DeleteFile 
+                 onFileDeleted={handleFileUpload} 
+                 folder={currentFolder} 
+                 fileName={folderName+"/"}
+               />
+             </div>
+           </li>
             ))}
 
             {visibleFiles.length > 0 ? (
               visibleFiles.map((file) => (
                 file.fileName && (
-                  <li key={file.fileName} className="mb-2 flex justify-between items-center group">
+                  <li key={file.fileName} className="mb-2 flex justify-between items-center">
                     <a
                       href={file.preSignedUrl}
                       target="_blank"

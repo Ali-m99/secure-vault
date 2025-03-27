@@ -24,8 +24,6 @@ public class User {
   private String email;
   private String password;
   private Long lastLoginDate;
-  private Boolean isPersonalAccount;
-  private Long orgId;
 
   // One-to-Many relationship with passwords
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -77,22 +75,6 @@ public class User {
 
   public void setLastLoginDate(Long lastLoginDate) {
     this.lastLoginDate = lastLoginDate;
-  }
-
-  public boolean isPersonalAccount() {
-    return isPersonalAccount;
-  }
-
-  public void setPersonalAccount(boolean isPersonalAccount) {
-    this.isPersonalAccount = isPersonalAccount;
-  }
-
-  public Long getOrgId() {
-    return orgId;
-  }
-
-  public void setOrgId(Long orgId) {
-    this.orgId = orgId;
   }
 
   public List<Password> getPasswords() {
