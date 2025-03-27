@@ -10,6 +10,8 @@ import PersonalLayout from "./Components/personaldisplay/PersonalLayout"; // Imp
 
 function App() {
   return (
+
+    <div className="app-container">
     <Router>
       <Routes>
         {/* Public Routes (No Navbar) */}
@@ -52,6 +54,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </div>
   );
 }
 
