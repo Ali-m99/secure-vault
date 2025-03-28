@@ -59,11 +59,11 @@ public class PasswordController {
 
     @PostMapping(path="/update")
     public @ResponseBody String updatePassword(@RequestParam(required = false) String serviceName, @RequestParam Long passwordId, 
-    @RequestParam(required = false) String newPassword, @RequestParam(required = false) String note, @RequestParam(required = false) String userName,
-    @RequestParam(required = false) String category){
+    @RequestParam(required = false) String encryptedPassword, @RequestParam(required = false) String note, @RequestParam(required = false) String userName,
+    @RequestParam(required = false) String category, @RequestParam(required = false) String salt){
         Long timestamp = Instant.now().toEpochMilli();
-        passwordRepository.updatePasswordDetails(passwordId, serviceName, newPassword, note, userName,
-        category, timestamp);
+        passwordRepository.updatePasswordDetails(passwordId, serviceName, encryptedPassword, note, userName,
+        category, timestamp, salt);
         return "password details updated";
     } 
 

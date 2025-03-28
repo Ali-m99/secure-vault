@@ -21,15 +21,16 @@ public interface PasswordRepository extends CrudRepository<Password, Long> {
                 UPDATE password
                 SET
                     service_name = COALESCE(:serviceName, service_name),
-                    password = COALESCE(:newPassword, password),
+                    encrypted_password = COALESCE(:encryptedPassword, encrypted_password),
                     notes = COALESCE(:note, notes),
                     user_name = COALESCE(:userName, user_name),
                     category = COALESCE(:category, category),
-                    last_modified_time = COALESCE(:lastModifiedTime, last_modified_time)
+                    last_modified_time = COALESCE(:lastModifiedTime, last_modified_time),
+                    salt = COALESCE(:salt, salt)
                 WHERE password_id = :passwordId
             """, nativeQuery = true)
-    void updatePasswordDetails(Long passwordId, String serviceName, String newPassword, String note, String userName,
-            String category, Long lastModifiedTime);
+    void updatePasswordDetails(Long passwordId, String serviceName, String encryptedPassword, String note, String userName,
+            String category, Long lastModifiedTime, String salt);
 
 
 }

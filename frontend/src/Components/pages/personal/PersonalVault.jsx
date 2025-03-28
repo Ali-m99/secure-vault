@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import CreatePasswords from '../../ui/CreatePasswords';
 import { deriveKey, decryptData } from '../../cryptography/Crypto';
+import UpdatePasswords from '../../ui/UpdatePasswords';
 
 const PersonalVault = () => {
   const [passwords, setPasswords] = useState([]);
@@ -34,6 +35,7 @@ const PersonalVault = () => {
   useEffect(() => { fetchPasswords(); }, []);
 
   const handlePasswordCreated = () => { fetchPasswords(); };
+  const handlePasswordUpdated = () => { fetchPasswords(); };
 
   const groupPasswordsByCategory = () => {
     const grouped = {};
@@ -66,7 +68,8 @@ const PersonalVault = () => {
             <CategorySection 
               key={category} 
               category={category} 
-              passwords={passwords} 
+              passwords={passwords}
+              handlePasswordUpdated={handlePasswordUpdated}
             />
           ))}
         </div>
@@ -80,7 +83,7 @@ const PersonalVault = () => {
   );
 };
 
-const CategorySection = ({ category, passwords }) => {
+const CategorySection = ({ category, passwords, handlePasswordUpdated }) => {
   return (
     <div className="bg-gradient-to-br from-black/90 via-black/20 to-black/90 rounded-lg border-2 border-green-400/60 overflow-hidden">
       <div className="p-3 bg-green-900/30 border-b border-green-700/50">
@@ -94,7 +97,10 @@ const CategorySection = ({ category, passwords }) => {
               serviceName={password.serviceName}
               userName={password.userName}
               password={password.decryptedPassword}
+              category={category}
+              passwordId={password.passwordId}
               note={password.notes}
+              handlePasswordUpdated={handlePasswordUpdated}
             />
           ))}
         </ul>
@@ -103,7 +109,7 @@ const CategorySection = ({ category, passwords }) => {
   );
 };
 
-const PasswordItem = ({ serviceName, userName, password, note }) => {
+const PasswordItem = ({ serviceName, userName, password, note, category, passwordId, handlePasswordUpdated }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -114,7 +120,7 @@ const PasswordItem = ({ serviceName, userName, password, note }) => {
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
       });
-  };
+  }; 
 
   return (
     <li className="p-3 hover:bg-green-800/30 transition-colors">
@@ -166,6 +172,16 @@ const PasswordItem = ({ serviceName, userName, password, note }) => {
             {isVisible ? password : '•'.repeat(Math.min(12, password?.length || 0))}
           </span>
         </div>
+        
+        <UpdatePasswords  
+              serviceNameU={serviceName}
+              userNameU={userName}
+              newPasswordU={password}
+              categoryU={category}
+              passwordIdU={passwordId}
+              noteU={note}
+              onPasswordUpdated={handlePasswordUpdated}/>
+
 
         {note && (
           <div className="mt-1 text-xs text-gray-400 break-words">
