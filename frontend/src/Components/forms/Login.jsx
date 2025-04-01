@@ -5,7 +5,7 @@ import { useAuth } from "../User/UserAuth";
 import MfaPrompt from '../ui/MfaPrompt';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showMfaPrompt, setShowMfaPrompt] = useState(false);
