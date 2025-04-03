@@ -3,6 +3,7 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import CreatePasswords from '../../ui/CreatePasswords';
 import { deriveKey, decryptData } from '../../cryptography/Crypto';
 import UpdatePasswords from '../../ui/UpdatePasswords';
+import DeletePassword from '../../ui/DeletePassword';
 
 const PersonalVault = () => {
   const [passwords, setPasswords] = useState([]);
@@ -181,6 +182,12 @@ const PasswordItem = ({ serviceName, userName, password, note, category, passwor
               passwordIdU={passwordId}
               noteU={note}
               onPasswordUpdated={handlePasswordUpdated}/>
+
+        <DeletePassword
+            onPasswordDeleted={handlePasswordUpdated}
+            passwordId={passwordId}
+            serviceName={serviceName}
+        />
 
 
         {note && (

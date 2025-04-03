@@ -84,11 +84,6 @@ const UpdatePasswords = ({ onPasswordUpdated, serviceNameU, userNameU, newPasswo
 
       if (response.ok) {
         onPasswordUpdated();
-        setServiceName('');
-        setUserName('');
-        setNewPassword('');
-        setNote('');
-        setCategory('');
         setShowForm(false);
       } else {
         throw new Error(data || 'Failed to store password');
