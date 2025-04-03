@@ -4,7 +4,7 @@ import React from "react";
 const PersonalDashboard = () => {
   return (
     <div className="p-2 py-10">
-      <h1 className="text-3xl font-bold text-green-600 mb-24">Dashboard</h1>
+      <h1 className=" mt-4 text-xl md:text-2xl font-bold text-green-600 mb-24">Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-6">
         {/* Password Overview */}
         <div className="bg-gradient-to-br from-black/90 via-black/5 to-black  p-6 rounded-lg border-4 border-green-700">

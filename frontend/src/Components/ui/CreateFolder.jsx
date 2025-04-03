@@ -46,24 +46,23 @@ const CreateFolder = ({ onFolderCreated, folder }) => {
     <div>
       <button
         onClick={() => setShowForm(!showForm)}
-        className="relative overflow-hidden mt-4 p-2 bg-black/10 rounded-lg text-white border-2 border-blue-400 transition-all duration-300 group"
+        className="relative overflow-hidden mt-4 p-2 bg-black/10 rounded-lg text-white border-2 border-green-400 transition-all duration-300 group"
       >
         <span className="relative z-10 text-sm md:text-lg">Create Folder</span>
-        <span className="absolute inset-y-0 right-full w-0 bg-blue-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+        <span className="absolute inset-y-0 right-full w-0 bg-green-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
       </button>
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-sm">
             {/* Flex container for header and Exit button */}
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-white">Upload Document</h2>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+                className="text-gray-400 hover:text-white"
               >
-                <span className="relative z-10 text-sm md:text-lg">Exit</span>
-                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+                ✕
               </button>
             </div>
 

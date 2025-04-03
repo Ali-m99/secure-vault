@@ -37,20 +37,29 @@ export const AuthProvider = ({ children }) => {
         });
   
         const data = await response.json();
-  
+        console.log('Login API Response:', data); // Moved inside the function
+
         if (data.status === 'success') {
-          const userData = { email, isPersonalAccount: data.isPersonalAccount, userId: data.userId,  firstName: data.firstName}; // Add more fields
+          const userData = { 
+            email, 
+            isPersonalAccount: data.isPersonalAccount, 
+            userId: data.userId,  
+            firstName: data.firstName, 
+            lastName: data.lastName 
+          };
+          console.log('User data being stored:', userData); // Debug log
+          
           setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
-          localStorage.setItem('masterPassword', password); // Stores user's masterPassword
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('masterPassword', password);
         } else {
           throw new Error(data.message);
         }
       } else {
         throw new Error(totpData.message);
       }
-
     } catch (error) {
+      console.error('Login error:', error);
       throw new Error('Login failed: ' + error.message);
     }
   };
@@ -58,8 +67,8 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user'); // Clear user data
-    localStorage.removeItem('masterPassword'); // Clear password
+    localStorage.removeItem('user');
+    localStorage.removeItem('masterPassword');
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 const DeletePassword = ({ onPasswordDeleted, passwordId, serviceName }) => {
     const [showForm, setShowForm] = useState(false);
@@ -8,21 +9,21 @@ const DeletePassword = ({ onPasswordDeleted, passwordId, serviceName }) => {
         e.preventDefault();
 
         const formData = new FormData();
-        formData.append('passwordId', passwordId)
+        formData.append('passwordId', passwordId);
 
         try {
             const response = await fetch('http://localhost:8080/password/delete', {
                 method: 'POST',
-                body: formData, // FormData will automatically set the Content-Type to multipart/form-data
+                body: formData, // FormData will automatically set the Content-Type to multipart/form-data 
             });
 
-            const data = await response.text(); // Assuming the backend returns plain text
+            const data = await response.text();
 
             if (response.ok) {
                 onPasswordDeleted(); // Notify parent component to refresh the file list
                 setShowForm(false); // Hide the form after successful submission
             } else {
-                throw new Error(data || 'Failed to create folder');
+                throw new Error(data || 'Failed to delete password');
             }
         } catch (error) {
             setError(error.message);
@@ -31,27 +32,27 @@ const DeletePassword = ({ onPasswordDeleted, passwordId, serviceName }) => {
 
     return (
         <div>
+            {/* Simplified icon button */}
             <button
-                onClick={() => setShowForm(!showForm)}
-                className="relative overflow-hidden p-1 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 hover:bg-red-500"
-                style={{ width: '32px', height: '32px' }}
+                onClick={() => setShowForm(true)}
+                className="text-red-400 hover:text-red-500 p-1"
+                aria-label="Delete password"
             >
-                <span className="relative z-10 text-sm">🗑️</span>
-                <span className="absolute inset-0 w-0 bg-red-700 transition-all duration-300 hover:w-full opacity-20"></span>
+                <TrashIcon className="w-5 h-5" />
             </button>
 
+            {/* Existing modal remains unchanged */}
             {showForm && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-                        {/* Header */}
+                         {/* Header */}
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-semibold text-white">Delete File</h2>
+                            <h2 className="text-xl font-semibold text-white">Delete Password</h2>
                             <button
                                 onClick={() => setShowForm(false)}
-                                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+                                className="text-gray-400 hover:text-white"
                             >
-                                <span className="relative z-10 text-sm md:text-lg">Exit</span>
-                                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+                                ✕
                             </button>
                         </div>
 
@@ -60,23 +61,21 @@ const DeletePassword = ({ onPasswordDeleted, passwordId, serviceName }) => {
                             <p className="text-white text-lg">Are you sure you want to delete this {serviceName} password?</p>
                         </div>
 
-                        {/* Error message */}
                         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-                        {/* Buttons */}
                         <form onSubmit={handleSubmit} className="flex gap-4">
                             <button
                                 type="button"
                                 onClick={() => setShowForm(false)}
-                                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
+                                className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700"
                             >
-                                No
+                                Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-all duration-300"
+                                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700"
                             >
-                                Yes
+                                Delete
                             </button>
                         </form>
                     </div>

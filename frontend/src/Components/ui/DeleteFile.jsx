@@ -1,39 +1,47 @@
 import React, { useState } from 'react';
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 const DeleteFile = ({ onFileDeleted, folder, fileName }) => {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState('');
+  const isFolder = fileName.endsWith('/');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Builds the folder path properly from an array
     // (i.e. from ["folder1", "folder2", "folder3"] to "folder1/folder2/folder3")
-    // If the passed in folder path isn't an array or is empty, upload file to root
-    let folderPath = "";
+    // If the passed in folder path isn't an array or is empty, upload file to root    
+    
+    let fullPath = "";
     if (Array.isArray(folder) && folder.length >= 1) {
-      folderPath = folder.join("/") + "/"; // Add extra slash at end to separate end of path and file name
+      fullPath = folder.join("/") + "/";
     }
-
-    // Prepare form data
-    const formData = new FormData();
-    const user = JSON.parse(localStorage.getItem('user'));
-    formData.append('userId', user.userId); // Assuming userId is stored in localStorage
-    formData.append("fileName", folderPath + fileName); // i.e. folder1/folder2/test.txt
+    fullPath += fileName;
 
     try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user || !user.userId) {
+        throw new Error('User not authenticated');
+      }
+
+      const formData = new FormData();
+      formData.append('userId', user.userId);
+      formData.append('fileName', fullPath);
+      formData.append('isFolder', isFolder.toString()); // Indicate this is a folder deletion
+
       const response = await fetch('http://localhost:8080/file/delete', {
         method: 'POST',
-        body: formData, // FormData will automatically set the Content-Type to multipart/form-data
+        body: formData,
       });
 
-      const data = await response.text(); // Assuming the backend returns plain text
+      const data = await response.text();
 
       if (response.ok) {
-        onFileDeleted(); // Notify parent component to refresh the file list
-        setShowForm(false); // Hide the form after successful submission
+        onFileDeleted();
+        setShowForm(false);
       } else {
-        throw new Error(data || 'Failed to create folder');
+        throw new Error(data || `Failed to delete ${isFolder ? 'folder' : 'file'}`);
       }
     } catch (error) {
       setError(error.message);
@@ -42,52 +50,60 @@ const DeleteFile = ({ onFileDeleted, folder, fileName }) => {
 
   return (
     <div>
+
       <button
-        onClick={() => setShowForm(!showForm)}
-        className="relative overflow-hidden p-1 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 hover:bg-red-500"
-        style={{ width: '32px', height: '32px' }}
-      >
-        <span className="relative z-10 text-sm">🗑️</span>
-        <span className="absolute inset-0 w-0 bg-red-700 transition-all duration-300 hover:w-full opacity-20"></span>
-      </button>
+                      onClick={() => setShowForm(!showForm)}
+                      className="text-red-400 hover:text-red-500 p-1"
+                      aria-label="Delete Folder"
+                      title={`Delete ${isFolder ? 'Folder' : 'File'}`}
+                  >
+                      <TrashIcon className="w-5 h-5" />
+                  </button>
+      
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-            {/* Header */}
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-3 z-50">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full  max-w-sm">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-white">Delete File</h2>
+              <h2 className="text-md md:text-xl font-semibold text-white">
+                Delete {isFolder ? 'Folder' : 'File'}
+              </h2>
               <button
-  onClick={() => setShowForm(false)}
-  className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
->
-  <span className="relative z-10 text-sm md:text-lg">Exit</span>
-  <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
-</button>
+                                onClick={() => setShowForm(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                ✕
+                            </button>
             </div>
 
-            {/* Centered confirmation message */}
             <div className="text-center mb-6">
-              <p className="text-white text-lg">Are you sure you want to delete the file "{fileName}"?</p>
+              <p className="text-white text-sm md:text-lg">
+                {isFolder ? (
+                  <>
+                    Delete folder "{fileName.replace(/\/$/, '')}" and 
+                    <strong> ALL its contents</strong>?
+                  </>
+                ) : (
+                  <>Delete file "{fileName}"?</>
+                )}
+              </p>
             </div>
 
-            {/* Error message */}
             {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-            {/* Buttons */}
             <form onSubmit={handleSubmit} className="flex gap-4">
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
+                className="flex-1 bg-gray-600 text-white  text-sm md:text-md p-2 rounded-md hover:bg-gray-700 transition-all duration-300"
               >
-                No
+                Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-all duration-300"
+                className="flex-1 bg-red-600 text-white text-sm md:text-md p-0 rounded-md hover:bg-red-700 transition-all duration-300"
               >
-                Yes
+                Confirm Delete
               </button>
             </form>
           </div>

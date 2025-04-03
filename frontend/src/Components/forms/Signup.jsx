@@ -9,8 +9,8 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isPersonalAccount, setIsPersonalAccount] = useState(true);
   const [message, setMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -119,7 +119,7 @@ const Signup = () => {
         <label htmlFor="password" className="block text-sm font-medium text-gray-300">Password</label>
         <div className='relative mt-1'>
           <input 
-            type={showPassword ? "password" : "text"} 
+            type={showPassword ? "text" : "password"} 
             id="password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -145,7 +145,7 @@ const Signup = () => {
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">Confirm Password</label>
         <div className='relative mt-1'>
           <input 
-            type={showConfirmPassword ? "password" : "text"} 
+            type={showConfirmPassword ? "text" : "password"} 
             id="confirmPassword" 
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -173,9 +173,9 @@ const Signup = () => {
       </div>
          {/*QR Code */}
       {qrCode !== '' ? (
-        <div className="mb-4">
+        <div className="mb-4 space-y-3">
           <label htmlFor="qrCode" className="block text-sm font-medium text-gray-300">Register for MFA</label>
-          <img src={qrCode} id='qrCode' alt='QR Code for MFA' />
+          <img src={qrCode} className=' items-center h-32 w-32' id='qrCode' alt='QR Code for MFA' />
         </div>
       ) : (
         <div className="mb-4">

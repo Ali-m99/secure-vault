@@ -5,12 +5,14 @@ import FilesIcon from "../../assets/file-icon.png";
 import PasswordIcon from "../../assets/password-icon.png";
 import ProfileIcon from "../../assets/user.png"
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../User/UserAuth";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Dashboard");
   const navigate = useNavigate();
   const location = useLocation();
+  const {user} = useAuth();
 
   // Set active tab based on current route
   useEffect(() => {
@@ -58,7 +60,7 @@ const Navbar = () => {
       </button>
 
       {/* Navbar */}
-      <nav className={`fixed lg:static flex flex-col h-[100dvh] w-64 bg-gradient-to-b from-black/90 via-green-800/90 to-black text-white p-4 transform transition-transform duration-300 ease-in-out ${
+      <nav className={`fixed lg:static flex flex-col h-[100dvh] w-64 xl:w-96 bg-gradient-to-b from-black/90 via-green-800/90 to-black text-white p-4 transform transition-transform duration-300 ease-in-out ${
   isOpen ? "translate-x-0" : "-translate-x-full"
 } lg:translate-x-0 z-40 overflow-y-auto scrollbar-hide`}>
       
@@ -69,14 +71,14 @@ const Navbar = () => {
 
         {/* User Info Section */}
         <div className="flex flex-col items-center py-3 md:py-8  mb-8 md:mb-24">
-        <div className="w-16 h-16 rounded-full bg-black/10 border-2 border-green-400 flex items-center justify-center mb-3">
+        <div className="w-24 h-24 rounded-full bg-black/10 border-2 border-green-400 flex items-center justify-center mb-3">
             <img 
-              src={ProfileIcon} 
+              src={ProfileIcon}  
               alt="Profile" 
-              className="w-10 h-10 object-cover"
+              className="w-10 h-10 xl:w-14 xl:h-14 object-cover"
             />
           </div>
-          <p className="text-md md:text-lg font-semibold">John Doe</p>
+          <p className="text-md md:text-lg font-semibold">{user?.firstName} {user?.lastName}</p>
         </div>
 
         {/* Navigation Links */}
@@ -99,11 +101,11 @@ const Navbar = () => {
                 <img
                   src={iconMapping[tab.name]}
                   alt={tab.name}
-                  className={`w-5 h-5 md:w-6 md:h-6 mr-3 ${
+                  className={`w-6 h-6 xl:w-10 xl:h-10 mr-3 ${
                     selectedTab === tab.name ? "opacity-100" : "opacity-70"
                   }`}
                 />
-                <span className="text-sm md:text-base">{tab.name}</span>
+                <span className="text-sm xl:text-2xl md:text-base">{tab.name}</span>
               </Link>
             </li>
           ))}

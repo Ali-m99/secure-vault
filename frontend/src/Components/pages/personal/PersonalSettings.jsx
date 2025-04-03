@@ -3,7 +3,7 @@ import React from "react";
 const PersonalSettings = () => {
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6 text-green-600">Settings</h1>
+      <h1 className=" mt-4 text-xl md:text-2xl font-bold mb-6 text-green-600">Settings</h1>
       <div className="bg-white/5 p-6 rounded-tl-lg rounded-br-lg border-2 border-green-700">
         <h2 className="text-xl font-semibold mb-4 text-green-500">Account Settings</h2>
 

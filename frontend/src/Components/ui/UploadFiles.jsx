@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const UploadFiles = ({ onFileUploaded, folder }) => {
+const UploadFiles = ({ onFileUploaded, folder, compact = false }) => {
   const [showForm, setShowForm] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
@@ -13,33 +13,29 @@ const UploadFiles = ({ onFileUploaded, folder }) => {
       return;
     }
 
-    // Builds the folder path properly from an array
-    // (i.e. from ["folder1", "folder2", "folder3"] to "folder1/folder2/folder3")
-    // If the passed in folder path isn't an array or is empty, upload file to root
     let folderPath = "";
     if(Array.isArray(folder) && folder.length >= 1) {
-      folderPath = folder.join("/") + "/"; // Add extra slash at end to separate end of path and file name
+      folderPath = folder.join("/") + "/";
     }
 
-    // Prepare form data
     const formData = new FormData();
     const user = JSON.parse(localStorage.getItem('user'));
     formData.append('file', file);
-    formData.append('userId', user.userId); // Assuming userId is stored in localStorage
+    formData.append('userId', user.userId);
     formData.append("fileName", folderPath + file.name);
 
     try {
       const response = await fetch('http://localhost:8080/file/upload', {
         method: 'POST',
-        body: formData, // FormData will automatically set the Content-Type to multipart/form-data
+        body: formData,
       });
 
-      const data = await response.text(); // Assuming the backend returns plain text
+      const data = await response.text();
 
       if (response.ok) {
-        onFileUploaded(); // Notify parent component to refresh the file list
+        onFileUploaded();
         setFile(null);
-        setShowForm(false); // Hide the form after successful submission
+        setShowForm(false);
       } else {
         throw new Error(data || 'Failed to upload file');
       }
@@ -52,47 +48,63 @@ const UploadFiles = ({ onFileUploaded, folder }) => {
     <div>
       <button
         onClick={() => setShowForm(!showForm)}
-        className="relative overflow-hidden mt-4 p-2 bg-black/10 rounded-lg text-white border-2 border-blue-400 transition-all duration-300 group"
+        className={`relative overflow-hidden ${
+          compact 
+            ? 'px-3 py-1.5 text-sm border border-gray-600 hover:border-green-400' 
+            : ' p-1 md:p-2 border-2 text-sm border-green-400'
+        } bg-black/10 rounded-lg text-white transition-all duration-300 group`}
       >
-        <span className="relative z-10 text-sm md:text-lg">Upload File</span>
-        <span className="absolute inset-y-0 right-full w-0 bg-blue-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+        <span className="relative text-sm lg:text-md z-10">{compact ? 'Upload Here' : 'Upload File'}</span>
+        <span className="absolute inset-y-0 right-full w-0 bg-green-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
       </button>
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-            {/* Flex container for header and Exit button */}
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-3 z-50">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-sm">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-white">Upload Document</h2>
+              <h2 className="text-md md:text-xl font-semibold text-white">Upload to {folder.length ? folder.join('/')   : 'Root'}</h2>
               <button
-                onClick={() => setShowForm(!showForm)}
-                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+                onClick={() => setShowForm(false)}
+                className="text-gray-400 hover:text-red-500/50"
               >
-                <span className="relative z-10 text-sm md:text-lg">Exit</span>
-                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+                ✕
               </button>
             </div>
 
-            {/* Error message */}
             {error && <p className="text-red-500 mb-4">{error}</p>}
 
-            {/* Form */}
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300">File</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Select File</label>
                 <input
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
-                  className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="block w-full text-sm text-gray-400
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-green-600 file:text-white
+                    hover:file:bg-green-700
+                    cursor-pointer
+                    bg-gray-700 rounded-md"
                   required
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
-              >
-                Upload File
-              </button>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="flex-1 py-2 px-4 bg-gray-600 text-sm md:text-lg text-white rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2 px-4 bg-green-600 text-sm md:text-lg text-white rounded-md hover:bg-green-700 transition-colors"
+                >
+                  Upload
+                </button>
+              </div>
             </form>
           </div>
         </div>

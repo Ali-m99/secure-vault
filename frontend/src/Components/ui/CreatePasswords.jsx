@@ -114,10 +114,9 @@ const CreatePasswords = ({ onPasswordCreated }) => {
               <h2 className="text-xl font-semibold text-white">Create New Password</h2>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="relative overflow-hidden p-2 bg-black/10 rounded-lg text-white border-2 border-red-400 transition-all duration-300 group"
+                className="text-gray-400 hover:text-white"
               >
-                <span className="relative z-10 text-sm md:text-lg">Exit</span>
-                <span className="absolute inset-y-0 right-full w-0 bg-red-700 transition-all duration-300 group-hover:right-0 group-hover:w-full"></span>
+                ✕
               </button>
             </div>
 

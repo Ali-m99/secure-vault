@@ -7,14 +7,14 @@ const MfaPrompt = ({ onSubmit, onCancel, totpCode, setTotpCode }) => {
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div className="bg-gray-600/20 border-4 border-dashed border-green-500/40 p-6 rounded-lg   shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-white">MFA Verification</h2>
         <button
           onClick={onCancel}
           className="text-gray-400 hover:text-white"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 hover:text-red-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -29,7 +29,7 @@ const MfaPrompt = ({ onSubmit, onCancel, totpCode, setTotpCode }) => {
             type="text"
             value={totpCode}
             onChange={(e) => setTotpCode(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-1 block w-full px-3 py-2 bg-black/20 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             placeholder="123456"
             required
             autoFocus
@@ -37,7 +37,7 @@ const MfaPrompt = ({ onSubmit, onCancel, totpCode, setTotpCode }) => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-all duration-300"
+          className="w-full bg-transparent border-2 border-gray-600/50 text-white py-2 px-4 rounded-md hover:bg-green-900 transition-all duration-300"
         >
           Verify
         </button>
