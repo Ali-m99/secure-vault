@@ -19,8 +19,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE User u SET u.password = :newPassword WHERE u.userId = :userId")
-    void forgotPassword(Long userId, String newPassword);
+    @Query("UPDATE User u SET u.password = :newPassword, u.passwordHint = :newPasswordHint WHERE u.userId = :userId")
+    void resetPassword(Long userId, String newPassword, String newPasswordHint);
 
     @Modifying
     @Transactional

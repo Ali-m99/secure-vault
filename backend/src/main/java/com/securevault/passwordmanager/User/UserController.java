@@ -1,8 +1,17 @@
 //Doc used for implementation: https://spring.io/guides/gs/accessing-data-mysql
 package com.securevault.passwordmanager.User;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +30,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.securevault.passwordmanager.Password.Password;
 import com.securevault.passwordmanager.S3.BucketService;
+
+import dev.samstevens.totp.code.CodeGenerator;
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.code.DefaultCodeGenerator;
+import dev.samstevens.totp.code.DefaultCodeVerifier;
+import dev.samstevens.totp.time.SystemTimeProvider;
+import dev.samstevens.totp.time.TimeProvider;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.security.core.AuthenticationException;
@@ -45,11 +63,10 @@ public class UserController {
   @PostMapping(path = "/register") // Map ONLY POST Requests
   public @ResponseBody String addNewUser(@RequestParam(value = "firstName") String firstName,
       @RequestParam(value = "lastName") String lastName, @RequestParam(value = "password") String password,
-      @RequestParam(value = "email") String email, @RequestParam(value = "secret") String secret) {
+      @RequestParam(value = "email") String email, @RequestParam(value = "secret") String secret, 
+      @RequestParam(value = "masterPasswordHint") String masterPasswordHint) {
     // @ResponseBody means the returned String is the response, not a view name
     // @RequestParam means it is a parameter from the GET or POST request
-
-    System.out.println("/add was reached!");
 
     // If there is a user that already has that email, don't create them.
     // Else, create them.
@@ -60,11 +77,12 @@ public class UserController {
         User n = new User();
         n.setFirstName(firstName);
         n.setLastName(lastName);
-        String hashedPassword = passwordEncoder.encode(password);
+        String hashedPassword = passwordEncoder.encode(password + email); // salts master password with email
         System.out.println("Hashed password: " + hashedPassword);
         n.setPassword(hashedPassword);
         n.setEmail(email);
         n.setTotpSecret(secret); // sets secret used for MFA
+        n.setPasswordHint(masterPasswordHint); // sets master password hint
 
         userRepository.save(n);
 
@@ -90,7 +108,7 @@ public class UserController {
     User loggedInUser = userRepository.findByEmail(email);
 
       try {
-          var authToken = new UsernamePasswordAuthenticationToken(email, password);
+          var authToken = new UsernamePasswordAuthenticationToken(email, password+email);
           var auth = authenticationManager.authenticate(authToken);
           SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -108,13 +126,95 @@ public class UserController {
 
   }
 
-  @PostMapping(path="/forgotPassword")
-  public @ResponseBody String forgotPassword(@RequestParam Long userId, @RequestParam String newPassword){
+  @PostMapping(path = "/unlock", produces = "application/json")
+  public ResponseEntity<Map<String, Object>> unlock(@RequestParam String email, 
+  @RequestParam String password, @RequestParam String code) {
 
-    String hashedPassword = passwordEncoder.encode(newPassword);
-    userRepository.forgotPassword(userId, hashedPassword);
-    return "Password Updated!";
+    Map<String, Object> responseBody = new HashMap<>();
+    
+    User loggedInUser = userRepository.findByEmail(email);
+    if (loggedInUser == null) {
+      responseBody.put("status", "error");
+      responseBody.put("message", "No user with email: " + email);
+      return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
 
+    // Verify TOTP code
+    TimeProvider timeProvider = new SystemTimeProvider();
+    CodeGenerator codeGenerator = new DefaultCodeGenerator();
+    CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+
+    if (!verifier.isValidCode(loggedInUser.getTotpSecret(), code)) {
+      responseBody.put("status", "error");
+      responseBody.put("message", "Invalid MFA code");
+      return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
+
+    if (!passwordEncoder.matches(password + email, loggedInUser.getPassword())) {
+      responseBody.put("status", "error");
+      responseBody.put("message", "Invalid credentials");
+      return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
+
+    responseBody.put("status", "success");
+    return ResponseEntity.ok(responseBody);
+
+  }
+
+  @PostMapping(path = "/passwordHint", produces = "application/json")
+  public ResponseEntity<Map<String, Object>> passwordHint(@RequestParam String email, 
+  @RequestParam String code) {
+
+    Map<String, Object> responseBody = new HashMap<>();
+
+    User user = userRepository.findByEmail(email);
+    if (user == null) {
+      responseBody.put("status", "error");
+      responseBody.put("message", "No user with email: " + email);
+      return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
+    // Verify TOTP code
+    TimeProvider timeProvider = new SystemTimeProvider();
+    CodeGenerator codeGenerator = new DefaultCodeGenerator();
+    CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+
+    if (!verifier.isValidCode(user.getTotpSecret(), code)) {
+      responseBody.put("status", "error");
+      responseBody.put("message", "Invalid MFA code");
+      return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+    }
+
+    responseBody.put("status", "success");
+    responseBody.put("hint", user.getPasswordHint());
+    return ResponseEntity.ok(responseBody);
+  }
+
+  @PostMapping(path = "/resetPassword")
+  public @ResponseBody String forgotPassword(@RequestParam String email,
+      @RequestParam String newMasterPassword, @RequestParam String code,
+      @RequestParam String masterPasswordHint) {
+    User user = userRepository.findByEmail(email);
+    if (user == null) {
+      return "User not found";
+    }
+
+    // Verify TOTP code
+    TimeProvider timeProvider = new SystemTimeProvider();
+    CodeGenerator codeGenerator = new DefaultCodeGenerator();
+    CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
+
+    if (!verifier.isValidCode(user.getTotpSecret(), code)) {
+      return "invalid code";
+    }
+
+    try {
+       // Updates user's password with new one, hashing and salting with email, and new master password hint
+    userRepository.resetPassword(user.getUserId(), passwordEncoder.encode(newMasterPassword + email), masterPasswordHint);
+    } catch (Exception e) {
+      return "Error updating master password: " + e.getMessage();
+    }
+      return "success";
   }
 
   

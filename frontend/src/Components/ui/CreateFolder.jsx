@@ -18,8 +18,8 @@ const CreateFolder = ({ onFolderCreated, folder }) => {
 
     // Prepare form data
     const formData = new FormData();
-    const user = JSON.parse(localStorage.getItem('user'));
-    formData.append('userId', user.userId); // Assuming userId is stored in localStorage
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    formData.append('userId', user.userId); // Assuming userId is stored in sessionStorage
     formData.append("folderName", folderPath + folderName + "/");
 
     try {

@@ -1,5 +1,6 @@
 // Managing user authentication state
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useMasterPassword } from './MasterPasswordContext';
 
 // Create the context
 const UserAuth = createContext();
@@ -8,10 +9,11 @@ const UserAuth = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Store user data
   const [loading, setLoading] = useState(true); // Track loading state
+  const { setMasterPassword } = useMasterPassword(); // Allows storage of master password in memory
 
-  // Check if a user is already logged in (e.g., from localStorage)
+  // Check if a user is already logged in (e.g., from sessionStorage)
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedUser = JSON.parse(sessionStorage.getItem('user'));
     if (storedUser) {
       setUser(storedUser);
     }
@@ -41,8 +43,7 @@ export const AuthProvider = ({ children }) => {
 
         if (data.status === 'success') {
           const userData = { 
-            email, 
-            isPersonalAccount: data.isPersonalAccount, 
+            email,
             userId: data.userId,  
             firstName: data.firstName, 
             lastName: data.lastName 
@@ -50,8 +51,8 @@ export const AuthProvider = ({ children }) => {
           console.log('User data being stored:', userData); // Debug log
           
           setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-          localStorage.setItem('masterPassword', password);
+          sessionStorage.setItem('user', JSON.stringify(userData));
+          setMasterPassword(password); // Stores master password in memory
         } else {
           throw new Error(data.message);
         }
@@ -67,8 +68,7 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('masterPassword');
+    sessionStorage.removeItem('user');
   };
 
   return (

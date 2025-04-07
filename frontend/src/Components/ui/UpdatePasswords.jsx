@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CryptoJS from 'crypto-js';
 import { deriveKey, encryptData } from '../cryptography/Crypto';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { useMasterPassword } from '../User/MasterPasswordContext';
 
 const UpdatePasswords = ({ 
   onPasswordUpdated, 
@@ -20,13 +21,13 @@ const UpdatePasswords = ({
   const [category, setCategory] = useState(categoryU);
   const [existingCategories, setExistingCategories] = useState(['Uncategorized']);
   const [error, setError] = useState('');
-  const [passwordId, setPasswordId] = useState(passwordIdU);
+  const { masterPassword } = useMasterPassword();
 
   // Fetch existing categories when form opens
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(sessionStorage.getItem('user'));
         if (!user?.userId) return;
         
         const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`);
@@ -71,14 +72,13 @@ const UpdatePasswords = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-      const masterPassword = localStorage.getItem('masterPassword');
       const salt = CryptoJS.lib.WordArray.random(128 / 8).toString();
       const key = deriveKey(masterPassword, salt);
       const encryptedPassword = encryptData(newPassword, key.toString());
 
         // Prepare form-encoded data
       const formData = new URLSearchParams();
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(sessionStorage.getItem('user'));
       formData.append('encryptedPassword', encryptedPassword);
       formData.append('salt', salt);
       formData.append('serviceName', serviceName);

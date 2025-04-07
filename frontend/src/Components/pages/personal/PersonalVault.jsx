@@ -4,20 +4,21 @@ import CreatePasswords from '../../ui/CreatePasswords';
 import { deriveKey, decryptData } from '../../cryptography/Crypto';
 import UpdatePasswords from '../../ui/UpdatePasswords';
 import DeletePassword from '../../ui/DeletePassword';
+import { useMasterPassword } from '../../User/MasterPasswordContext';
 
 const PersonalVault = () => {
   const [passwords, setPasswords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { masterPassword } = useMasterPassword();
 
   const fetchPasswords = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(sessionStorage.getItem('user'));
       if (!user?.userId) throw new Error('User ID not found');
       
       const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`);
       const data = await response.json();
 
-      const masterPassword = localStorage.getItem('masterPassword');
       const decryptedPasswords = data.map((password) => {
         const key = deriveKey(masterPassword, password.salt);
         const decryptedPassword = decryptData(password.encryptedPassword, key.toString());

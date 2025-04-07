@@ -7,7 +7,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isPersonalAccount, setIsPersonalAccount] = useState(true);
+  const [masterPasswordHint, setMasterPasswordHint] = useState('');
   const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -42,7 +42,8 @@ const Signup = () => {
       lastName,
       email,
       password,
-      secret
+      secret,
+      masterPasswordHint
     };
 
     try {
@@ -64,7 +65,7 @@ const Signup = () => {
         setEmail('');
         setPassword('');
         setConfirmPassword('');
-        setIsPersonalAccount(true);
+        setMasterPasswordHint('');
       }
     } catch (error) {
       setMessage('An error occurred while submitting the form. Please try again.');
@@ -171,6 +172,17 @@ const Signup = () => {
         )}
       </div>
       </div>
+
+      {/* Master Password Hint */}
+      <div className="mb-4">
+        <label htmlFor="passwordHint" className="block text-sm font-medium text-gray-300">Password Hint</label>
+        <input type="text" id="passwordHint" value={masterPasswordHint}
+          onChange={(e) => setMasterPasswordHint(e.target.value)}
+          className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+          required
+        />
+      </div>
+
          {/*QR Code */}
       {qrCode !== '' ? (
         <div className="mb-4 space-y-3">

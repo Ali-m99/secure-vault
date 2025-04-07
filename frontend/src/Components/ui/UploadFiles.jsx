@@ -19,7 +19,7 @@ const UploadFiles = ({ onFileUploaded, folder, compact = false }) => {
     }
 
     const formData = new FormData();
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
     formData.append('file', file);
     formData.append('userId', user.userId);
     formData.append("fileName", folderPath + file.name);

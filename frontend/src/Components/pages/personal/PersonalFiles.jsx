@@ -19,9 +19,9 @@ const PersonalFiles = () => {
 
   const fetchFiles = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(sessionStorage.getItem('user'));
       if (!user || !user.userId) {
-        throw new Error('User ID not found in localStorage');
+        throw new Error('User ID not found in sessionStorage');
       }
 
       const userId = user.userId;

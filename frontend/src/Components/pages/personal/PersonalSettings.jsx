@@ -1,4 +1,5 @@
 import React from "react";
+import ResetPassword from "../../ui/ResetPassword";
 
 const PersonalSettings = () => {
   return (
@@ -32,6 +33,7 @@ const PersonalSettings = () => {
             Save Changes
           </button>
         </form>
+        <ResetPassword/>
       </div>
     </div>
   );

@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Login from '../../forms/Login';
 import backgroundImage from '../../assets/sv-background.jpg'; // Adjust the path to your image
+import ForgotPassword from '../../ui/ForgotPassword';
 
 const LoginPage = () => {
+  const [masterPasswordHint, setMasterPasswordHint] = useState('');
+
   return (
     <div className="min-h-screen flex relative">
       {/* Background Image */}
@@ -37,11 +40,15 @@ const LoginPage = () => {
           ></div>
 
           <Login /> {/* Your existing Login form component */}
-          <div className="mt-4 text-center">
-            <a href="/forgot-password" className="text-sm text-blue-400 hover:underline">
-              Forgot Password?
-            </a>
-          </div>
+          <ForgotPassword setPasswordHint={setMasterPasswordHint}/>
+
+          {masterPasswordHint != '' && (
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-400">
+                Your master password hint is: {masterPasswordHint}
+              </p>
+            </div>
+          )}
 
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-400">

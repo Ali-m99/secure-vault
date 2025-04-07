@@ -7,11 +7,23 @@ import PersonalFiles from "./Components/pages/personal/PersonalFiles"; // Import
 import PersonalVault from "./Components/pages/personal/PersonalVault"; // Import Vault page
 import PersonalSettings from "./Components/pages/personal/PersonalSettings"; // Import Settings page
 import PersonalLayout from "./Components/personaldisplay/PersonalLayout"; // Import the layout component
+import { useMasterPassword } from './Components/User/MasterPasswordContext';
+import MasterPasswordPrompt from './Components/User/MasterPasswordPrompt';
+import { useAuth } from "./Components/User/UserAuth";
 
 function App() {
+  const { masterPassword, wasSetOnce } = useMasterPassword();
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+
+  // Only show prompt if user is logged in, has refreshed, and password is not in memory
+  const shouldPrompt = user && wasSetOnce && !masterPassword;
+
   return (
 
     <div className="app-container">
+      {shouldPrompt && <MasterPasswordPrompt/>}
     <Router>
       <Routes>
         {/* Public Routes (No Navbar) */}

@@ -25,6 +25,7 @@ public class User {
   private String password;
   private Long lastLoginDate;
   private String totpSecret;
+  private String passwordHint;
 
   // One-to-Many relationship with passwords
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -92,6 +93,14 @@ public class User {
 
   public void setTotpSecret(String totpSecret) {
     this.totpSecret = totpSecret;
+  }
+
+  public String getPasswordHint() {
+    return passwordHint;
+  }
+
+  public void setPasswordHint(String passwordHint) {
+    this.passwordHint = passwordHint;
   }
 
 }
