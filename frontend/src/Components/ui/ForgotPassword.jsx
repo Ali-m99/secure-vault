@@ -15,7 +15,8 @@ const ForgotPassword = ({ setPasswordHint }) => {
             const response = await fetch('/user/passwordHint', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({ email, code }).toString()
+                body: new URLSearchParams({ email, code }).toString(),
+                credentials: "include"
             });
     
             const data = await response.json();

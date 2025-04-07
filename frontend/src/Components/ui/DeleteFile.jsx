@@ -33,6 +33,7 @@ const DeleteFile = ({ onFileDeleted, folder, fileName }) => {
       const response = await fetch('http://localhost:8080/file/delete', {
         method: 'POST',
         body: formData,
+        credentials: "include"
       });
 
       const data = await response.text();

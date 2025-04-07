@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import java.time.Instant;
 
 @Controller
 @RequestMapping(path="/password")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
 public class PasswordController {
     
     @Autowired
@@ -69,7 +70,7 @@ public class PasswordController {
 
     @GetMapping("/getPasswords")
     public @ResponseBody List<Password> getPasswords(@RequestParam String userId) {
-        System.out.println(userId);
+        System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext().getAuthentication());
         User user = userRepository.findByUserId(Long.parseLong(userId))
                                   .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getPasswords();

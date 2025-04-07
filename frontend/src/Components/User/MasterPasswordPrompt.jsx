@@ -22,7 +22,8 @@ const MasterPasswordPrompt = () => {
         const response = await fetch('/user/unlock', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ 'email': user.email, password, code })
+            body: new URLSearchParams({ 'email': user.email, password, code }),
+            credentials: "include"
         });
 
         const data = await response.json();

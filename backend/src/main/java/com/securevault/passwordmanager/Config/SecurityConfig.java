@@ -1,5 +1,7 @@
 package com.securevault.passwordmanager.Config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,6 +43,19 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // List allowed origins; for production, consider externalizing this value.
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true); // This allows cookies/credentials to be sent
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     // Bean for filtering which URLs that users can access while they're
     // authenticated or not
     // and also whether to generate a CSRF token or not for sessions.
@@ -45,11 +63,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(Customizer.withDefaults())
             .authenticationProvider(authenticationProvider())
             .csrf(csrf -> csrf.disable()) // TODO: Properly implement CSRF protection
             .authorizeHttpRequests(auth -> auth
                 // Allow registration and login endpoints without authentication
-                .requestMatchers("/**").permitAll()
+                // .requestMatchers("/**").permitAll()
+                .requestMatchers("/user/login", "/user/register", "/user/passwordHint", "/mfa/**").permitAll()
                 // Secure all other endpoints
                 .anyRequest().authenticated())
             .sessionManagement(session -> session

@@ -14,7 +14,8 @@ const DeletePassword = ({ onPasswordDeleted, passwordId, serviceName }) => {
         try {
             const response = await fetch('http://localhost:8080/password/delete', {
                 method: 'POST',
-                body: formData, // FormData will automatically set the Content-Type to multipart/form-data 
+                body: formData, // FormData will automatically set the Content-Type to multipart/form-data
+                credentials: "include" 
             });
 
             const data = await response.text();

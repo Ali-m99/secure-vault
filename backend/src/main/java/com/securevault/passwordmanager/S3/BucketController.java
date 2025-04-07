@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/file")
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
 public class BucketController {
     
     @Autowired

@@ -21,26 +21,28 @@ const Login = () => {
   const handleInitialSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
+
+    setShowMfaPrompt(true);
     
-    try {
-      // First verify email/password (MFA will always be required)
-      const response = await fetch('/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ email, password }).toString(),
-      });
+    // try {
+    //   // First verify email/password (MFA will always be required)
+    //   const response = await fetch('/user/loginTest', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    //     body: new URLSearchParams({ email, password }).toString(),
+    //   });
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      if (data.status === 'success') {
-        // For enforced MFA, always show the prompt after successful credentials
-        setShowMfaPrompt(true);
-      } else {
-        throw new Error(data.message || 'Login failed');
-      }
-    } catch (error) {
-      setError(error.message);
-    }
+    //   if (data.status === 'success') {
+    //     // For enforced MFA, always show the prompt after successful credentials
+    //     setShowMfaPrompt(true);
+    //   } else {
+    //     throw new Error(data.message || 'Login failed');
+    //   }
+    // } catch (error) {
+    //   setError(error.message);
+    // }
   };
 
   const handleMfaSubmit = async () => {

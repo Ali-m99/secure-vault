@@ -25,7 +25,9 @@ const PersonalFiles = () => {
       }
 
       const userId = user.userId;
-      const response = await fetch(`http://localhost:8080/file/downloadAll?userId=${userId}`);
+      const response = await fetch(`http://localhost:8080/file/downloadAll?userId=${userId}`, {
+        credentials: "include"
+      });
       const data = await response.json();
 
       if (Array.isArray(data)) {

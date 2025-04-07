@@ -26,5 +26,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Transactional
     @Query("UPDATE User u SET u.email = :newEmail WHERE u.userId = :userId")
     void updateEmail(Long userId, String newEmail);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.lastLoginDate = :lastLoginDate WHERE u.userId = :userId")
+    void updateLastLoginDate(Long userId, Long lastLoginDate);
         
 }

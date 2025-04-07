@@ -21,7 +21,9 @@ const CreatePasswords = ({ onPasswordCreated }) => {
         const user = JSON.parse(sessionStorage.getItem('user'));
         if (!user?.userId) return;
         
-        const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`);
+        const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`, {
+          credentials: "include"
+        });
         const passwords = await response.json();
         
         // Get unique categories, keeping 'Uncategorized' as first option
@@ -78,6 +80,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString(),
+        credentials: "include"
       });
 
       const data = await response.text();

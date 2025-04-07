@@ -26,6 +26,7 @@ const CreateFolder = ({ onFolderCreated, folder }) => {
       const response = await fetch('http://localhost:8080/file/createFolder', {
         method: 'POST',
         body: formData, // FormData will automatically set the Content-Type to multipart/form-data
+        credentials: "include"
       });
 
       const data = await response.text(); // Assuming the backend returns plain text

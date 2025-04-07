@@ -28,6 +28,7 @@ const UploadFiles = ({ onFileUploaded, folder, compact = false }) => {
       const response = await fetch('http://localhost:8080/file/upload', {
         method: 'POST',
         body: formData,
+        credentials: "include"
       });
 
       const data = await response.text();

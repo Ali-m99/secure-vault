@@ -33,7 +33,9 @@ const ResetPassword = () => {
             if (!user?.userId) throw new Error('User ID not found');
     
             // 1. Get all passwords from backend
-            const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`);
+            const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`, {
+                credentials: "include"
+            });
             const encryptedPasswords = await response.json();
             
             // 2. Decrypt all passwords with old key
@@ -58,6 +60,7 @@ const ResetPassword = () => {
                         passwordId: password.passwordId,
                         encryptedPassword: reencryptedPassword
                     }).toString(),
+                    credentials: "include"
                 });
             });
     
@@ -95,7 +98,8 @@ const ResetPassword = () => {
                     newMasterPassword, 
                     masterPasswordHint,
                     code 
-                }).toString()
+                }).toString(),
+                credentials: "include"
             });
     
             if (!response.ok) throw new Error('Password reset failed');

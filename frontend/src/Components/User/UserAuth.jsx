@@ -35,23 +35,22 @@ export const AuthProvider = ({ children }) => {
         const response = await fetch('/user/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({email, password}).toString(),
+          body: new URLSearchParams({email, password}).toString()
         });
   
         const data = await response.json();
-        console.log('Login API Response:', data); // Moved inside the function
 
         if (data.status === 'success') {
           const userData = { 
             email,
             userId: data.userId,  
             firstName: data.firstName, 
-            lastName: data.lastName 
+            lastName: data.lastName,
+            lastLogin: data.lastLogin
           };
-          console.log('User data being stored:', userData); // Debug log
           
           setUser(userData);
-          sessionStorage.setItem('user', JSON.stringify(userData));
+          sessionStorage.setItem('user', JSON.stringify(userData)); // Stores user data in session storage
           setMasterPassword(password); // Stores master password in memory
         } else {
           throw new Error(data.message);

@@ -1,8 +1,8 @@
 import CryptoJS from 'crypto-js';
 
 // Derive encryption key from master password
-const deriveKey = (keySeed, salt) => {
-    return CryptoJS.PBKDF2(keySeed, salt, {
+const deriveKey = (masterPassword, salt) => {
+    return CryptoJS.PBKDF2(masterPassword, salt, {
         keySize: 256 / 32, // 256-bit key
         iterations: 100000,
     });

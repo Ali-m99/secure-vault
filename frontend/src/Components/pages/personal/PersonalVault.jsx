@@ -16,7 +16,9 @@ const PersonalVault = () => {
       const user = JSON.parse(sessionStorage.getItem('user'));
       if (!user?.userId) throw new Error('User ID not found');
       
-      const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`);
+      const response = await fetch(`http://localhost:8080/password/getPasswords?userId=${user.userId}`, {
+        credentials: "include"
+      });
       const data = await response.json();
 
       const decryptedPasswords = data.map((password) => {
