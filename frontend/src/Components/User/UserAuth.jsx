@@ -67,7 +67,9 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = () => {
     setUser(null);
+    sessionStorage.removeItem("isAuthenticated");
     sessionStorage.removeItem('user');
+    sessionStorage.removeItem('wasMasterPasswordSet');
   };
 
   return (

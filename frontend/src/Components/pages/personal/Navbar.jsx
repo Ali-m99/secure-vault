@@ -12,7 +12,7 @@ const Navbar = () => {
   const [selectedTab, setSelectedTab] = useState("Dashboard");
   const navigate = useNavigate();
   const location = useLocation();
-  const {user} = useAuth();
+  const {user, logout} = useAuth();
 
   // Set active tab based on current route
   useEffect(() => {
@@ -37,7 +37,7 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("isAuthenticated");
+    logout();
     navigate("/login");
   };
 
