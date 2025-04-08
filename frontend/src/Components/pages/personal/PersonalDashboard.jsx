@@ -1,7 +1,42 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const PersonalDashboard = () => {
+  const [passwordCount, setPasswordCount] = useState(0);
+  const [fileCount, setFileCount] = useState(0);
+
+  // When page loads, retrieve password and file count
+  useEffect(() => {
+    fetchPasswordCount();
+    fetchFileCount();
+  }, []);
+
+  const fetchPasswordCount = async () => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const response = await fetch(`/password/count?userId=${user.userId}`, {
+      credentials: "include"
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+      setPasswordCount(data.count);
+    }
+  }
+
+  const fetchFileCount = async () => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    const response = await fetch(`/file/count?userId=${user.userId}`, {
+      credentials: "include"
+    });
+
+    const data = await response.text();
+
+    if (response.ok) {
+      setFileCount(data);
+    }
+  }
+
   return (
     <div className="p-2 py-10">
       <h1 className=" mt-4 text-xl md:text-2xl font-bold text-green-600 mb-24">Dashboard</h1>
@@ -10,8 +45,7 @@ const PersonalDashboard = () => {
         <div className="bg-gradient-to-br from-black/90 via-black/5 to-black  p-6 rounded-lg border-4 border-green-700">
           <h2 className="text-xl font-semibold mb-4 text-green-400">Passwords</h2>
           <ul className="text-gray-300 text-sm space-y-4">
-          <li>Total: 25</li>
-          <li>Recently Added: 1</li>
+          <li>Total: {passwordCount}</li>
           </ul>
         </div>
 
@@ -19,17 +53,7 @@ const PersonalDashboard = () => {
         <div className="bg-gradient-to-br from-black/90 via-black/5 to-black  p-6 rounded-lg border-4 border-green-700">
           <h2 className="text-xl font-semibold mb-4 text-green-400">Documents</h2>
           <ul className="text-gray-300 text-sm space-y-4">
-          <li>Total: 10</li>
-          <li>Recently Added: 1</li>
-          </ul>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-gradient-to-br from-black/90 via-black/5 to-black  p-6 rounded-lg border-4 border-green-700">
-          <h2 className="text-xl font-semibold mb-4 text-green-400">Recent Activity</h2>
-          <ul className="text-gray-300 text-sm space-y-4">
-            <li>Added new password - 2 hours ago</li>
-            <li>Updated document - 5 hours ago</li>
+          <li>Total: {fileCount}</li>
           </ul>
         </div>
       </div>

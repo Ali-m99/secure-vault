@@ -32,5 +32,9 @@ public interface PasswordRepository extends CrudRepository<Password, Long> {
     void updatePasswordDetails(Long passwordId, String serviceName, String encryptedPassword, String note, String userName,
             String category, Long lastModifiedTime, String salt);
 
+    @Transactional
+    @Query(value = "SELECT COUNT(*) FROM password WHERE user_id = :userId", nativeQuery = true)
+    int countPasswordsByUserId(Long userId);
+
 
 }

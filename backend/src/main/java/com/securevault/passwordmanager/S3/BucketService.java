@@ -53,24 +53,12 @@ public class BucketService {
         return url.toString();
     }
 
-    // public HashMap<String, String> getAllObjectsFromBucket(String bucketName) throws IOException {
-    //      HashMap<String, String> bucketFiles = new HashMap<>();
-
-    //     // List all objects in the bucket
-    //     ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName);
-    //     ListObjectsV2Result result;
-        
-    //     do {
-    //         result = s3Client.listObjectsV2(request);
-    //         for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
-    //             String fileName = objectSummary.getKey();
-    //             bucketFiles.put(getPreSignedURL(bucketName, fileName), fileName);
-    //         }
-    //         request.setContinuationToken(result.getNextContinuationToken());
-    //     } while (result.isTruncated());
-
-    //     return bucketFiles;
-    // }
+    // Returns number of objects (files) within specified s3 bucket
+    public int getObjectCount(String bucketName) {
+        ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName);
+        ListObjectsV2Result result = s3Client.listObjectsV2(request);
+        return result.getKeyCount();
+    }
 
     public List<FileInfo> getAllObjectsFromBucket(String bucketName) throws IOException {
         List<FileInfo> bucketFiles = new ArrayList<>();

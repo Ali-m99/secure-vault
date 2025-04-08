@@ -104,6 +104,8 @@ const CategorySection = ({ category, passwords, handlePasswordUpdated }) => {
               passwordId={password.passwordId}
               note={password.notes}
               handlePasswordUpdated={handlePasswordUpdated}
+              lastUpdatedDateTime={password.lastModifiedTime}
+              createdDateTime={password.dateCreated}
             />
           ))}
         </ul>
@@ -112,7 +114,9 @@ const CategorySection = ({ category, passwords, handlePasswordUpdated }) => {
   );
 };
 
-const PasswordItem = ({ serviceName, userName, password, note, category, passwordId, handlePasswordUpdated }) => {
+const PasswordItem = ({ serviceName, userName, password, note, category, passwordId, handlePasswordUpdated,
+  lastUpdatedDateTime, createdDateTime
+ }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
@@ -133,7 +137,7 @@ const PasswordItem = ({ serviceName, userName, password, note, category, passwor
             <p className="text-sm md:text-lg font-medium text-gray-100 truncate">
               {serviceName}
             </p>
-            <p className="text-xs md:text-lg text-gray-400 truncate">{userName}</p>
+            <p className="text-sm md:text-lg text-gray-400 truncate">{userName}</p>
           </div>
           <div className="flex gap-1">
             {/* Eye Icon - Visibility Toggle */}
@@ -187,10 +191,17 @@ const PasswordItem = ({ serviceName, userName, password, note, category, passwor
         </div>
 
         {note && (
-          <div className="mt-1 text-xs text-gray-400 break-words">
+          <div className="mt-1 text-sm text-gray-400 break-words">
             <span className="font-medium">Note:</span> {note}
           </div>
         )}
+
+        <div className="mt-1 text-xs text-gray-400 break-words">
+          <span className="font-medium">Date Created:</span> {new Intl.DateTimeFormat("en", {dateStyle: "medium", timeStyle: "medium"}).format(new Date(createdDateTime))}
+        </div>
+        <div className="mt-1 text-xs text-gray-400 break-words">
+          <span className="font-medium">Last Modified:</span> {new Intl.DateTimeFormat("en", {dateStyle: "medium", timeStyle: "medium"}).format(new Date(lastUpdatedDateTime))}
+        </div>
       </div>
 
       {showToast && (

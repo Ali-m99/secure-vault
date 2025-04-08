@@ -29,6 +29,12 @@ public class BucketController {
         return bucketService.getAllObjectsFromBucket(bucketName);
     }
 
+    @GetMapping("/count")
+    public @ResponseBody int getFileCount(@RequestParam String userId) {
+        String bucketName = "sv-p" + userId;
+        return bucketService.getObjectCount(bucketName);
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<String> deleteObject(@RequestParam String userId, @RequestParam String fileName) throws Exception {
         String bucketName = "sv-p" + userId;

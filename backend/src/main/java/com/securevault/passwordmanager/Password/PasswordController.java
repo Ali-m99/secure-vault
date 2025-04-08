@@ -1,9 +1,13 @@
 package com.securevault.passwordmanager.Password;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.securevault.passwordmanager.User.User;
 import com.securevault.passwordmanager.User.UserRepository;
 
+import java.net.http.HttpResponse;
 import java.time.Instant;
 
 @Controller
@@ -70,10 +75,29 @@ public class PasswordController {
 
     @GetMapping("/getPasswords")
     public @ResponseBody List<Password> getPasswords(@RequestParam String userId) {
-        System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext().getAuthentication());
         User user = userRepository.findByUserId(Long.parseLong(userId))
                                   .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getPasswords();
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Object>> getPasswordCount(@RequestParam String userId) {
+        Map<String, Object> responseBody = new HashMap<>();
+
+        int count = 0;
+
+        try {
+
+            count = passwordRepository.countPasswordsByUserId(Long.parseLong(userId));
+            responseBody.put("status", "success");
+            responseBody.put("count", count);
+
+        } catch (Exception e) {
+            responseBody.put("status", "error");
+            responseBody.put("message", e.getMessage());
+            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return ResponseEntity.ok(responseBody);
+    }
 }
