@@ -8,6 +8,8 @@ const PersonalFiles = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentFolder, setCurrentFolder] = useState([]);
+  const [fileCount, setFileCount] = useState(0);
+  const [folderCount, setFolderCount] = useState(0);
 
   useEffect(() => {
     fetchFiles();
@@ -32,13 +34,23 @@ const PersonalFiles = () => {
 
       if (Array.isArray(data)) {
         setFiles(data);
+        // Count actual files (non-folder items)
+        const realFiles = data.filter(file => !file.fileName.endsWith('/'));
+        setFileCount(realFiles.length);
+        // Count folders (items ending with '/')
+        const folders = data.filter(file => file.fileName.endsWith('/'));
+        setFolderCount(folders.length);
       } else {
         console.error('Expected an array of files, but got:', data);
         setFiles([]);
+        setFileCount(0);
+        setFolderCount(0);
       }
     } catch (error) {
       console.error('Failed to fetch files:', error);
       setFiles([]);
+      setFileCount(0);
+      setFolderCount(0);
     } finally {
       setLoading(false);
     }
@@ -60,7 +72,9 @@ const PersonalFiles = () => {
       }
 
       const fileName = parts[parts.length - 1];
-      currentLevel.files.push({ ...file, fileName });
+      if (fileName) { // Only add if not empty (handles folder markers)
+        currentLevel.files.push({ ...file, fileName });
+      }
     });
 
     return root;
@@ -94,15 +108,15 @@ const PersonalFiles = () => {
     <div className="px-4 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-        <h1 className=" py-6 mt-4 text-xl md:text-2xl font-bold text-green-500">My Files</h1>
+        <h1 className="py-6 mt-4 text-xl md:text-2xl font-bold text-green-500">My Files</h1>
         <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
-          <CreateFolder onFolderCreated={handleFileUpload} folder={currentFolder} />
           
+          <CreateFolder onFolderCreated={handleFileUpload} folder={currentFolder} />
         </div>
       </div>
 
       {/* Main Content Container */}
-      <div className=" bg-gradient-to-br from-black/90 via-slate-800/20 to-black/70 backdrop-blur-sm rounded-lg border-2 border-gray-700 shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-br from-black/90 via-slate-800/20 to-black/70 backdrop-blur-sm rounded-lg border-2 border-gray-700 shadow-lg overflow-hidden">
         {/* Navigation Bar */}
         <div className="p-3 sm:p-4 border-b border-gray-800 bg-gradient-to-r from-green-800/20 bg-green-900/30 flex items-center overflow-x-auto">
           {currentFolder.length > 0 ? (
@@ -144,10 +158,14 @@ const PersonalFiles = () => {
             </div>
           ) : (
             <>
+            
               {/* Folders Section */}
               {Object.keys(visibleFolders).length > 0 && (
                 <div className="mb-6">
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-300 mb-3">Folders</h2>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-300 mb-3">
+                    Folders ({Object.keys(visibleFolders).length})
+                  </h2>
+                  
                   <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
                     {Object.keys(visibleFolders).map((folderName) => (
                       <div
@@ -180,18 +198,17 @@ const PersonalFiles = () => {
               <div className="mt-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-3">
                   <div className="flex items-center">
-                    <h2 className="text-base sm:text-lg font-semibold text-gray-300 mr-3">Files</h2>
-                    <span className="text-xs bg-green-900/50 text-green-400 px-2 py-1 rounded-full">
-                      {visibleFiles.length} {visibleFiles.length === 0 ? 'file' : 'files'}
-                    </span>
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-300 mr-3">
+                      Files ({visibleFiles.length})
+                    </h2>
                   </div>
                   
-                  <div className="w-full  sm:w-auto">
+                  <div className="w-full sm:w-auto">
                     <UploadFiles 
                       onFileUploaded={handleFileUpload} 
                       folder={currentFolder}
                       compact={false}
-                      className="w-full   sm:w-auto"
+                      className="w-full sm:w-auto"
                     />
                   </div>
                 </div>
@@ -228,14 +245,11 @@ const PersonalFiles = () => {
                 ) : (
                   <div className="text-center py-8 text-gray-500 border-2 border-dashed border-gray-700 rounded-lg">
                     <DocumentIcon className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-600 mb-3" />
-                    <p className="mb-4 text-sm sm:text-base">No files in this directory</p>
-                    <div className="flex justify-center">
-                      <UploadFiles 
-                        onFileUploaded={handleFileUpload} 
-                        folder={currentFolder}
-                        variant="primary"
-                      />
-                    </div>
+                    <p className="mb-4 text-sm sm:text-base">
+                      {Object.keys(visibleFolders).length > 0 ? 
+                        "No files in this folder" : 
+                        "No files uploaded yet"}
+                    </p>
                   </div>
                 )}
               </div>

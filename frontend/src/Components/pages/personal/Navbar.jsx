@@ -41,6 +41,13 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  const handleTabClick = () => {
+    // Close navbar on mobile when a tab is clicked
+    if (window.innerWidth < 1280) {
+      setIsOpen(false);
+    }
+  };
+
   const iconMapping = {
     Dashboard: DashboardIcon,
     Files: FilesIcon,
@@ -97,6 +104,7 @@ const Navbar = () => {
                     ? "bg-green-700 border-2 border-green-300"
                     : "hover:bg-black/30 hover:border-2 border-green-700"
                 }`}
+                onClick={handleTabClick}
               >
                 <img
                   src={iconMapping[tab.name]}

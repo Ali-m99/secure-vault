@@ -61,7 +61,7 @@ const PersonalVault = () => {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="bg-green-600/50 rounded-lg p-4 h-40 animate-pulse"></div>
           ))}
@@ -137,7 +137,7 @@ const PasswordItem = ({ serviceName, userName, password, note, category, passwor
             <p className="text-sm md:text-lg font-medium text-gray-100 truncate">
               {serviceName}
             </p>
-            <p className="text-sm md:text-lg text-gray-400 truncate">{userName}</p>
+            <p className="text-sm lg:text-lg text-gray-400 ">{userName}</p>
           </div>
           <div className="flex gap-1">
             {/* Eye Icon - Visibility Toggle */}

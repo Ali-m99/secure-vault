@@ -156,7 +156,7 @@ const Signup = () => {
           <button
             type="button"
             onClick={toggleConfirmPasswordVisibility}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+            className="absolute inset-y-0 right-0 p-1 pr-3 flex items-center text-sm leading-5"
           >
             {showConfirmPassword ? (
               <EyeSlashIcon className="h-5 w-5 text-gray-400" />
@@ -165,12 +165,13 @@ const Signup = () => {
             )}
           </button>
        
-        {confirmPassword.length > 0 && (
-          <p className={`mt-1 text-sm ${passwordsMatch ? 'text-green-500' : 'text-red-500'}`}>
+        
+      </div>
+      {confirmPassword.length > 0 && (
+          <p className={` mt-1 text-sm ${passwordsMatch ? 'text-green-500' : 'text-red-500'}`}>
             {passwordsMatch ? 'Passwords match!' : 'Passwords do not match'}
           </p>
         )}
-      </div>
       </div>
 
       {/* Master Password Hint */}
