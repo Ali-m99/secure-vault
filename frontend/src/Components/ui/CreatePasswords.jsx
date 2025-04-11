@@ -112,7 +112,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
       </button>
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-1 z-50">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-white">Create New Password</h2>
@@ -128,7 +128,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300">Service Name</label>
+                <label className="block text-sm font-medium text-gray-300">Service Name <span className='text-xl text-gray-300'>*</span> </label>
                 <input
                   type="text"
                   value={serviceName}
@@ -138,7 +138,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300">Username</label>
+                <label className="block text-sm font-medium text-gray-300">Username <span className='text-xl text-gray-300'>*</span> </label>
                 <input
                   type="text"
                   value={userName}
@@ -148,7 +148,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-300">Password</label>
+                <label className="block text-sm font-medium text-gray-300">Password <span className='text-xl text-gray-300'>*</span> </label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="text"
@@ -175,7 +175,7 @@ const CreatePasswords = ({ onPasswordCreated }) => {
                   className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 ">
                 <label className="block text-sm font-medium text-gray-300">Category</label>
                 <div className="flex mt-2 gap-2">
                   <select
